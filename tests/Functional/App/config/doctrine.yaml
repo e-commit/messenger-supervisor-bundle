@@ -1,0 +1,7 @@
+doctrine:
+    dbal:
+        connections:
+            default:
+                driver: pdo_sqlite
+                logging: false
+                path: "%kernel.project_dir%/var/database.sqlite"

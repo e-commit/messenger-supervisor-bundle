@@ -1,0 +1,5 @@
+framework:
+    secret: test
+    test: true
+    mailer:
+        dsn: 'sendmail://default'

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="ecommit_messenger_supervisor.supervisor_api" class="Supervisor\Supervisor" public="false">
+            <factory class="Ecommit\MessengerSupervisorBundle\Supervisor\SupervisorApiFactory" method="createSupervisor" />
+            <argument>%ecommit_messenger_supervisor.supervisor%</argument>
+        </service>
+        <service id="Supervisor\Supervisor" alias="ecommit_messenger_supervisor.supervisor_api" public="false" />
+
+        <service id="ecommit_messenger_supervisor.supervisor" class="Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor" public="false">
+            <argument type="service" id="ecommit_messenger_supervisor.supervisor_api" />
+            <argument>%ecommit_messenger_supervisor.transports%</argument>
+        </service>
+        <service id="Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor" alias="ecommit_messenger_supervisor.supervisor" public="false" />
+
+        <service id="Ecommit\MessengerSupervisorBundle\EventListener\WorkerMessageFailedEventListener" class="Ecommit\MessengerSupervisorBundle\EventListener\WorkerMessageFailedEventListener" public="false">
+            <argument type="service" id="ecommit_messenger_supervisor.supervisor" />
+            <argument type="service" id="Psr\Log\LoggerInterface" on-invalid="null" />
+            <argument type="service" id="mailer" />
+            <argument>%ecommit_messenger_supervisor.mailer%</argument>
+            <tag name="kernel.event_listener" event="Symfony\Component\Messenger\Event\WorkerMessageFailedEvent" method="onFailure" priority="%ecommit_messenger_supervisor.failure_event_priority%" />
+        </service>
+
+        <service id="Ecommit\MessengerSupervisorBundle\Command\ManageCommand" class="Ecommit\MessengerSupervisorBundle\Command\ManageCommand" public="false">
+            <argument type="service" id="ecommit_messenger_supervisor.supervisor" />
+            <tag name="console.command" />
+        </service>
+    </services>
+</container>

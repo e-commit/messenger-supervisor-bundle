@@ -1,0 +1,44 @@
+framework:
+    messenger:
+        transports:
+            async:
+                dsn: 'doctrine://default?queue_name=async'
+                retry_strategy:
+                    max_retries: 0
+            async2: 'doctrine://default?queue_name=async2'
+            email: 'doctrine://default?queue_name=email'
+        routing:
+            'Ecommit\MessengerSupervisorBundle\Tests\Functional\App\Messenger\Message\MessageSuccess': async
+            'Ecommit\MessengerSupervisorBundle\Tests\Functional\App\Messenger\Message\MessageError': async
+            'Symfony\Component\Mailer\Messenger\SendEmailMessage': email
+
+ecommit_messenger_supervisor:
+    supervisor:
+        #Supervisor API configuration
+        host: '127.0.0.1' #IP address - Required
+        username: user #Username - Not required - Default value: null
+        password: 123 #Password - Not required - Default value: null
+        #port: 9001 #Port - Not required - Default value: 9001
+        #timeout: 3600 #API timeout (in seconds) - Not required - Default value: 3600
+
+    #Transports / Programs configuration :
+    #Mapping "Messenger transport name" -> "Supervisor program name (group name)"
+    transports:
+        async: program_async #async = Messenger transport name | program_async = Supervisor program (group) name
+        #Or you can set options :
+        #async:
+        #   failure:
+        #       stop_program: true #Stop program after failure - Not required - Default value : true
+        #       send_mail: true #Send mail after failure - Not required - Default value : true
+
+        #You can define others programs :
+        async2: program_async2
+
+    #Mailer configuration
+    mailer:
+        from: from@localhost #Sender - Required if a program is setting with send_mail=true option
+        to: to@localhost #Recipient - Required if a program is setting with send_mail=true option
+        #You can use multiple recipients:
+        #to: ['to1@localhost', 'to2@localhost']
+        #subject: "[Supervisor][<program>] Error" #Suject - Not required - Default value : "[Supervisor][<program>] Error"
+        #<program> is replaced by Supervisor program (group) name

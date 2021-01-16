@@ -1,0 +1,8 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Ecommit\MessengerSupervisorBundle\Tests\Functional\App\:
+        resource: '../{Messenger/MessageHandler}'

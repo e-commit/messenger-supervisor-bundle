@@ -1,0 +1,16 @@
+Error during execution of "{{ program }}" Supervisor program.
+
+<h1>Infos</h1>
+<ul>
+    <li><b>Date: </b>{{ 'now'|date('Y-m-d H:i:s') }}</li>
+    <li><b>Transport: </b>{{ event.receiverName }}</li>
+    <li><b>Stop program: </b>{{ (stop_program) ? 'Yes' : 'No' }}</li>
+</ul>
+
+<br />
+<h1>Message</h1>
+{{ event.envelope.message|json_encode }}
+<br />
+
+<h1>Error</h1>
+{{ throwable_message }}
