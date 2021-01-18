@@ -28,16 +28,20 @@ jobs:
                     -   php-version: '7.4'
                         symfony-version: '^5'
                         description: 'with SF ^5'
+                    -   php-version: '7.4'
+                        description: 'with Coding Standards'
+                        coding-standards: true
 
         name: PHP ${{ matrix.php-version }} ${{ matrix.description }}
 
-        runs-on: 'ubuntu-20.04'
+        runs-on: 'ubuntu-latest'
 
         steps:
             -   name: Checkout
                 uses: actions/checkout@v2
 
             -   name: Install system dependencies
+                if: matrix.coding-standards != true
                 run: |
                     sudo apt-get update
                     sudo apt-get install -y supervisor
@@ -70,12 +74,8 @@ jobs:
                 uses: actions/cache@v2
                 with:
                     path: ${{ steps.composer-cache.outputs.dir }}
-                    key: composer-${{ runner.os }}-${{ matrix.php-version }}-${{ hashFiles('**/composer.*') }}-${{ matrix.composer-flags }} #cs
-                    restore-keys: |
-                        composer-${{ runner.os }}-${{ matrix.php-version }}-${{ hashFiles('**/composer.*') }}-
-                        composer-${{ runner.os }}-${{ matrix.php-version }}-
-                        composer-${{ runner.os }}-
-                        composer-
+                    key: composer-${{ runner.os }}-${{ matrix.php-version }}-${{ hashFiles('**/composer.*') }}-${{ matrix.composer-flags }}
+                    restore-keys: composer-${{ runner.os }}-${{ matrix.php-version }}-
 
             -   name: Configure Symfony Flex
                 if: matrix.symfony-version
@@ -85,10 +85,11 @@ jobs:
                 run: composer update --no-interaction --no-progress ${{ matrix.composer-flags }}
 
             -   name: Run PHPUnit
+                if: matrix.coding-standards != true
                 run: php vendor/phpunit/phpunit/phpunit
 
             -   name: Display Supervisor status
-                if: ${{ always() }}
+                if: matrix.coding-standards != true
                 run: |
                     echo "Supervisor status :"
                     sudo supervisorctl status || true
@@ -98,6 +99,7 @@ jobs:
                     sudo supervisorctl tail program_async:program_async_00 stderr || true
 
             -   name: Run PHP CS Fixer
+                if: matrix.coding-standards
                 env:
                     PHP_CS_FIXER_IGNORE_ENV: 1
                 run: php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --diff --dry-run -v
