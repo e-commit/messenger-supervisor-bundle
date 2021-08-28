@@ -14,11 +14,11 @@ declare(strict_types=1);
 namespace Ecommit\MessengerSupervisorBundle\Supervisor;
 
 use fXmlRpc\Client as fXmlRpcClient;
-use fXmlRpc\Transport\HttpAdapterTransport;
-use GuzzleHttp\Client as GuzzleClient;
-use Http\Adapter\Guzzle7\Client as AdapterGuzzleClient;
-use Http\Message\MessageFactory\GuzzleMessageFactory;
+use fXmlRpc\Transport\PsrTransport;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Supervisor\Supervisor;
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\HttpClient\Psr18Client;
 
 class SupervisorApiFactory
 {
@@ -33,20 +33,19 @@ class SupervisorApiFactory
             $auth = [$supervisorParameters['username'], $supervisorParameters['password']];
         }
 
-        $guzzleClient = new GuzzleClient([
-            'auth' => $auth,
+        $httpClient = HttpClient::create([
+            'auth_basic' => $auth,
             'timeout' => $supervisorParameters['timeout'],
         ]);
 
-        $client = new fXmlRpcClient(
+        $psr18Client = new Psr18Client($httpClient);
+
+        $fXmlRpcClient = new fXmlRpcClient(
             static::getUrl($supervisorParameters['host'], $supervisorParameters['port']),
-            new HttpAdapterTransport(
-                new GuzzleMessageFactory(),
-                new AdapterGuzzleClient($guzzleClient)
-            )
+            new PsrTransport(new Psr17Factory(), $psr18Client)
         );
 
-        return new Supervisor($client);
+        return new Supervisor($fXmlRpcClient);
     }
 
     protected static function getUrl(string $host, int $port): string
