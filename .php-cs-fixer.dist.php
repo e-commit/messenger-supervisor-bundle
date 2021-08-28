@@ -13,9 +13,9 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__)
     ->exclude('tests/Functional/App/var')
 ;
+$config = new PhpCsFixer\Config();
 
-return PhpCsFixer\Config::create()
-    ->setRiskyAllowed(true)
+return $config->setRiskyAllowed(true)
     ->setRules([
         '@Symfony' => true,
         '@Symfony:risky' => true,
