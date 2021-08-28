@@ -22,10 +22,10 @@
         }
     },
     "require": {
-        "php": "^7.3",
+        "php": "^7.3|^8.0",
         "egulias/email-validator": "^2.0",
         "guzzlehttp/psr7": "^1.7",
-        "lstrojny/fxmlrpc": "^0.15",
+        "lstrojny/fxmlrpc": "^0.22",
         "php-http/guzzle7-adapter": "^0.1.1",
         "php-http/message": "^1.10",
         "psr/log": "^1.1",

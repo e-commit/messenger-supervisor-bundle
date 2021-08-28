@@ -28,7 +28,13 @@ jobs:
                     -   php-version: '7.4'
                         symfony-version: '^5'
                         description: 'with SF ^5'
-                    -   php-version: '7.4'
+                    -   php-version: '8.0'
+                        symfony-version: '^4'
+                        description: 'with SF ^4'
+                    -   php-version: '8.0'
+                        symfony-version: '^5'
+                        description: 'with SF ^5'
+                    -   php-version: '8.0'
                         description: 'with Coding Standards'
                         coding-standards: true
 
