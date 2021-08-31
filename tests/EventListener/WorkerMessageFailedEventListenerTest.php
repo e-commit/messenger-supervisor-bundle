@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ecommit\MessengerSupervisorBundle\Tests\EventListener;
 
 use Ecommit\MessengerSupervisorBundle\EventListener\WorkerMessageFailedEventListener;
+use Ecommit\MessengerSupervisorBundle\Mailer\ErrorEmailBuilder;
 use Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor;
 use Ecommit\MessengerSupervisorBundle\Tests\AbstractTest;
 use Ecommit\MessengerSupervisorBundle\Tests\Functional\App\Messenger\Message\MessageSuccess;
@@ -64,6 +65,8 @@ class WorkerMessageFailedEventListenerTest extends AbstractTest
             ],
         ]);
 
+        $errorEmailBuilder = self::$container->get(ErrorEmailBuilder::class);
+
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $consecutives = [];
         if ($expectedStopProgram) {
@@ -89,10 +92,7 @@ class WorkerMessageFailedEventListenerTest extends AbstractTest
 
                     $this->assertSame('[Supervisor][program1] Error', $email->getSubject());
 
-                    $body = self::$container->get('twig')->render(
-                        $email->getHtmlTemplate(),
-                        $email->getContext()
-                    );
+                    $body = $email->getHtmlBody();
 
                     $this->assertStringContainsString('Error during execution of "program1" Supervisor program.', $body);
                     $this->assertStringContainsString('<li><b>Transport: </b>transport1</li>', $body);
@@ -111,7 +111,7 @@ class WorkerMessageFailedEventListenerTest extends AbstractTest
                 ->method('send');
         }
 
-        $listener = new WorkerMessageFailedEventListener($supervisor, $logger, $mailer, [
+        $listener = new WorkerMessageFailedEventListener($supervisor, $errorEmailBuilder, $logger, $mailer, [
             'from' => 'from@localhost',
             'to' => ['to@localhost'],
             'subject' => '[Supervisor][<program>] Error',

@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ecommit\MessengerSupervisorBundle\EventListener;
 
 use Ecommit\MessengerSupervisorBundle\Exception\TransportNotFoundException;
+use Ecommit\MessengerSupervisorBundle\Mailer\ErrorEmailBuilderInterface;
 use Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor;
 use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -32,6 +33,11 @@ class WorkerMessageFailedEventListener
     protected $supervisor;
 
     /**
+     * @var ErrorEmailBuilderInterface
+     */
+    protected $errorEmailBuilder;
+
+    /**
      * @var LoggerInterface
      */
     protected $logger;
@@ -43,9 +49,10 @@ class WorkerMessageFailedEventListener
 
     protected $mailerParameters;
 
-    public function __construct(Supervisor $supervisor, ?LoggerInterface $logger, MailerInterface $mailer, array $mailerParameters)
+    public function __construct(Supervisor $supervisor, ErrorEmailBuilderInterface $errorEmailBuilder, ?LoggerInterface $logger, MailerInterface $mailer, array $mailerParameters)
     {
         $this->supervisor = $supervisor;
+        $this->errorEmailBuilder = $errorEmailBuilder;
         $this->logger = $logger;
         $this->mailer = $mailer;
         $this->mailerParameters = $mailerParameters;
@@ -97,18 +104,12 @@ class WorkerMessageFailedEventListener
             if ($this->logger) {
                 $this->logger->info('Sending email');
             }
+            $body = $this->errorEmailBuilder->getBody($event, $transportInfos, $this->mailerParameters, $stop);
             $email = (new TemplatedEmail())
                 ->from($this->mailerParameters['from'])
                 ->to(...$this->mailerParameters['to'])
-                ->subject($this->getSubjectEmail($event))
-                ->htmlTemplate('@EcommitMessengerSupervisor/Email/failure.html.twig')
-                ->context(array_merge([
-                    'event' => $event,
-                    'program' => $transportInfos['program'],
-                    'transport_infos' => $transportInfos,
-                    'stop_program' => $stop,
-                    'throwable_message' => $this->getThrowableMessage($event->getThrowable()),
-                ], $this->getContextEmail($event)))
+                ->subject($this->errorEmailBuilder->getSubject($event, $transportInfos, $this->mailerParameters, $stop))
+                ->html($body)
             ;
 
             $this->mailer->send($email);
@@ -121,25 +122,5 @@ class WorkerMessageFailedEventListener
         }
 
         return true;
-    }
-
-    protected function getContextEmail(WorkerMessageFailedEvent $event): array
-    {
-        return [];
-    }
-
-    protected function getSubjectEmail(WorkerMessageFailedEvent $event): string
-    {
-        $program = $this->supervisor->getTransport($event->getReceiverName())['program'];
-
-        $subject = $this->mailerParameters['subject'];
-        $subject = str_replace('<program>', $program, $subject);
-
-        return $subject;
-    }
-
-    protected function getThrowableMessage(\Throwable $throwable): string
-    {
-        return sprintf('%s: %s at %s line %s', \get_class($throwable), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
     }
 }
