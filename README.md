@@ -84,8 +84,8 @@ ecommit_messenger_supervisor:
         #Or you can set options :
         #async:
         #   failure:
-        #       stop_program: true #Stop program after failure - Not required - Default value : true
-        #       send_mail: true #Send mail after failure - Not required - Default value : true
+        #       stop_program: true #Stop program after failure - Not required - Available values: "always", "will-not-retry" (only if the message cannot be retried), "never" - Default value : "always"
+        #       send_mail: true #Send mail after failure - Not required - Available values: "always", "will-not-retry" (only if the message cannot be retried), "never" - Default value : "always"
 
         #You can define others programs :
         #async2: program_async2
