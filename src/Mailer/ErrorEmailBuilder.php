@@ -49,6 +49,8 @@ class ErrorEmailBuilder implements ErrorEmailBuilderInterface
             'transport_infos' => $transportInfos,
             'stop_program' => $stop,
             'throwable_message' => $this->getThrowableMessage($event->getThrowable()),
+            'server' => php_uname('n'),
+            'additional_data' => [],
         ];
     }
 

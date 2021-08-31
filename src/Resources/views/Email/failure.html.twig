@@ -3,8 +3,13 @@ Error during execution of "{{ program }}" Supervisor program.
 <h1>Infos</h1>
 <ul>
     <li><b>Date: </b>{{ 'now'|date('Y-m-d H:i:s') }}</li>
+    <li><b>Server: </b>{{ server }}</li>
+    <li><b>Program: </b>{{ program }}</li>
     <li><b>Transport: </b>{{ event.receiverName }}</li>
     <li><b>Stop program: </b>{{ (stop_program) ? 'Yes' : 'No' }}</li>
+    {% for dataName, dataValue in additional_data %}
+        <li><b>{{ dataName }}: </b>{{ dataValue }}</li>
+    {% endfor %}
 </ul>
 
 <br />
