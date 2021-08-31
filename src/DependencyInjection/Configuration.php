@@ -96,7 +96,7 @@ class Configuration implements ConfigurationInterface
                                 ->then(function ($v) { return [$v]; })
                             ->end()
                         ->end()
-                        ->scalarNode('subject')->defaultValue('[Supervisor][<program>] Error')->end()
+                        ->scalarNode('subject')->defaultValue('[Supervisor][<server>][<program>] Error')->end()
                     ->end()
                 ->end()
                 ->integerNode('failure_event_priority')->defaultValue(10)->end()

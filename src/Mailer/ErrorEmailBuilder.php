@@ -63,6 +63,7 @@ class ErrorEmailBuilder implements ErrorEmailBuilderInterface
     {
         $subject = $mailerParameters['subject'];
         $subject = str_replace('<program>', $transportInfos['program'], $subject);
+        $subject = str_replace('<server>', php_uname('n'), $subject);
 
         return $subject;
     }

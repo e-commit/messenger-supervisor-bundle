@@ -96,8 +96,9 @@ ecommit_messenger_supervisor:
         to: to@localhost #Recipient - Required if a program is setting with send_mail=true option
         #You can use multiple recipients:
         #to: ['to1@localhost', 'to2@localhost']
-        #subject: "[Supervisor][<program>] Error" #Suject - Not required - Default value : "[Supervisor][<program>] Error"
+        #subject: "[Supervisor][<server>][<program>] Error" #Suject - Not required - Default value : "[Supervisor][<program>] Error"
         #<program> is replaced by Supervisor program (group) name
+        #<server> is replaced by server name
 ```
 
 

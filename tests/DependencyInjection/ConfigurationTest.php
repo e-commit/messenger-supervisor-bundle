@@ -78,7 +78,7 @@ class ConfigurationTest extends TestCase
             'mailer' => [
                 'from' => 'from@localhost',
                 'to' => ['to@localhost'],
-                'subject' => '[Supervisor][<program>] Error',
+                'subject' => '[Supervisor][<server>][<program>] Error',
             ],
             'failure_event_priority' => 10,
         ];
@@ -120,7 +120,7 @@ class ConfigurationTest extends TestCase
             'mailer' => [
                 'from' => 'from@localhost',
                 'to' => ['to@localhost'],
-                'subject' => '[Supervisor][<program>] Error',
+                'subject' => '[Supervisor][<server>][<program>] Error',
             ],
             'failure_event_priority' => 10,
         ];
@@ -196,7 +196,7 @@ class ConfigurationTest extends TestCase
         $expected = [
             'from' => 'from@localhost',
             'to' => ['to@localhost'],
-            'subject' => '[Supervisor][<program>] Error',
+            'subject' => '[Supervisor][<server>][<program>] Error',
         ];
         $this->assertSame($expected, $configuration['mailer']);
     }
@@ -219,7 +219,7 @@ class ConfigurationTest extends TestCase
         $expected = [
             'from' => 'from@localhost',
             'to' => ['to1@localhost', 'to2@localhost'],
-            'subject' => '[Supervisor][<program>] Error',
+            'subject' => '[Supervisor][<server>][<program>] Error',
         ];
         $this->assertSame($expected, $configuration['mailer']);
     }
