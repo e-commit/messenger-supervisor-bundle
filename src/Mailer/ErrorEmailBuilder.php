@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ecommit\MessengerSupervisorBundle\Mailer;
 
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Twig\Environment;
 
 class ErrorEmailBuilder implements ErrorEmailBuilderInterface
@@ -43,12 +44,20 @@ class ErrorEmailBuilder implements ErrorEmailBuilderInterface
 
     protected function getContext(WorkerMessageFailedEvent $event, array $transportInfos, array $mailerParameters, bool $stop): array
     {
+        $throwable = $event->getThrowable();
+        $throwableMessages = [$this->getThrowableMessage($throwable)];
+        if ($throwable instanceof HandlerFailedException && \count($throwable->getNestedExceptions()) > 0) {
+            foreach ($throwable->getNestedExceptions() as $exception) {
+                $throwableMessages[] = $this->getThrowableMessage($exception);
+            }
+        }
+
         return [
             'event' => $event,
             'program' => $transportInfos['program'],
             'transport_infos' => $transportInfos,
             'stop_program' => $stop,
-            'throwable_message' => $this->getThrowableMessage($event->getThrowable()),
+            'throwable_messages' => $throwableMessages,
             'server' => php_uname('n'),
             'additional_data' => [],
         ];

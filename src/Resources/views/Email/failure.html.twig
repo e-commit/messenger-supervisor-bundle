@@ -18,4 +18,8 @@ Error during execution of "{{ program }}" Supervisor program.
 <br />
 
 <h1>Error</h1>
-{{ throwable_message }}
+<ul>
+    {% for throwable_message in throwable_messages %}
+        <li>{{ throwable_message }}</li>
+    {% endfor %}
+</ul>
