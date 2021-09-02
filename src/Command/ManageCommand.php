@@ -40,13 +40,15 @@ final class ManageCommand extends Command
 
     protected static $defaultName = 'ecommit:supervisor';
 
+    protected static $defaultDescription = 'Manage Supervisor processes';
+
     protected function configure(): void
     {
         $this
             ->addArgument('action', InputArgument::REQUIRED, 'start|stop|status')
             ->addArgument('programs', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Program(s) name(s) or "all"')
             ->addOption('nagios', null, InputOption::VALUE_NONE, 'Suitable for using as a nagios NRPE command')
-            ->setDescription('Manage Supervisor processes')
+            ->setDescription(self::$defaultDescription) //Compatibility with Symfony < 5.3
         ;
     }
 
