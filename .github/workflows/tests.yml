@@ -13,28 +13,27 @@ jobs:
             fail-fast: false
             matrix:
                 include:
+                    #Mini
                     -   php-version: '7.3'
                         composer-flags: '--prefer-stable --prefer-lowest'
                         description: 'with lowest'
+
+                    #Symfony versions
+                    -   php-version: '8.1'
+                        symfony-version: '^4.4'
+                        description: 'with SF ^4.4'
+                    -   php-version: '8.1'
+                        symfony-version: '^5.4'
+                        description: 'with SF ^5.4'
+
+                    #PHP versions
                     -   php-version: '7.3'
-                        symfony-version: '^4'
-                        description: 'with SF ^4'
-                    -   php-version: '7.3'
-                        symfony-version: '^5'
-                        description: 'with SF ^5'
                     -   php-version: '7.4'
-                        symfony-version: '^4'
-                        description: 'with SF ^4'
-                    -   php-version: '7.4'
-                        symfony-version: '^5'
-                        description: 'with SF ^5'
                     -   php-version: '8.0'
-                        symfony-version: '^4'
-                        description: 'with SF ^4'
-                    -   php-version: '8.0'
-                        symfony-version: '^5'
-                        description: 'with SF ^5'
-                    -   php-version: '8.0'
+                    -   php-version: '8.1'
+
+                    #CS
+                    -   php-version: '8.1'
                         description: 'with Coding Standards'
                         coding-standards: true
 
@@ -106,6 +105,4 @@ jobs:
 
             -   name: Run PHP CS Fixer
                 if: matrix.coding-standards
-                env:
-                    PHP_CS_FIXER_IGNORE_ENV: 1
                 run: php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --diff --dry-run -v

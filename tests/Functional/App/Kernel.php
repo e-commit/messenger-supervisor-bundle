@@ -30,7 +30,7 @@ class Kernel extends BaseKernel
         $loader->load(__DIR__.'/config/services.yaml');
     }
 
-    public function registerBundles()
+    public function registerBundles(): array
     {
         return [
             new FrameworkBundle(),
@@ -40,7 +40,7 @@ class Kernel extends BaseKernel
         ];
     }
 
-    public function getProjectDir()
+    public function getProjectDir(): string
     {
         return __DIR__;
     }
