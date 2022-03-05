@@ -35,7 +35,7 @@ class WorkflowTest extends KernelTestCase
 
     public function testStatusBeforeStart(): void
     {
-        self::$container->get('doctrine')->getConnection()->query('DROP TABLE IF EXISTS messenger_messages');
+        self::getContainer()->get('doctrine')->getConnection()->query('DROP TABLE IF EXISTS messenger_messages');
 
         $command = $this->getCommandTester();
         $command->execute([
@@ -54,7 +54,7 @@ class WorkflowTest extends KernelTestCase
     public function testSendMessageSuccess(): void
     {
         $messageSuccess = new MessageSuccess();
-        $bus = self::$container->get(MessageBusInterface::class);
+        $bus = self::getContainer()->get(MessageBusInterface::class);
         $enveloppe = $bus->dispatch($messageSuccess);
         $this->messageSuccessId = $enveloppe->last(TransportMessageIdStamp::class)->getId();
 
@@ -128,7 +128,7 @@ class WorkflowTest extends KernelTestCase
     public function testSendMessageError(): void
     {
         $messageError = new MessageError();
-        $bus = self::$container->get(MessageBusInterface::class);
+        $bus = self::getContainer()->get(MessageBusInterface::class);
         $enveloppe = $bus->dispatch($messageError);
         $this->messageErrorId = $enveloppe->last(TransportMessageIdStamp::class)->getId();
 
@@ -210,7 +210,7 @@ class WorkflowTest extends KernelTestCase
     protected function getCommandTester(): CommandTester
     {
         $application = new Application();
-        $application->add(self::$container->get(ManageCommand::class));
+        $application->add(self::getContainer()->get(ManageCommand::class));
 
         return new CommandTester($application->find('ecommit:supervisor'));
     }
@@ -221,7 +221,7 @@ class WorkflowTest extends KernelTestCase
 
         while (true) {
             /** @var QueryBuilder $queryBuilder */
-            $queryBuilder = self::$container->get('doctrine')->getConnection()->createQueryBuilder();
+            $queryBuilder = self::getContainer()->get('doctrine')->getConnection()->createQueryBuilder();
             $queryBuilder->from('messenger_messages')
                 ->select('count(*)');
             if ($queue) {

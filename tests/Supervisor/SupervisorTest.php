@@ -26,7 +26,7 @@ class SupervisorTest extends AbstractTest
     {
         self::bootKernel();
 
-        $service = self::$container->get('ecommit_messenger_supervisor.supervisor');
+        $service = self::getContainer()->get('ecommit_messenger_supervisor.supervisor');
         $this->assertInstanceOf(Supervisor::class, $service);
     }
 
@@ -34,7 +34,7 @@ class SupervisorTest extends AbstractTest
     {
         self::bootKernel();
 
-        $service = self::$container->get(Supervisor::class);
+        $service = self::getContainer()->get(Supervisor::class);
         $this->assertInstanceOf(Supervisor::class, $service);
     }
 

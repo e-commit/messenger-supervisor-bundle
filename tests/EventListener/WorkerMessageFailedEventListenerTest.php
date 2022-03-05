@@ -65,7 +65,7 @@ class WorkerMessageFailedEventListenerTest extends AbstractTest
             ],
         ]);
 
-        $errorEmailBuilder = self::$container->get(ErrorEmailBuilder::class);
+        $errorEmailBuilder = self::getContainer()->get(ErrorEmailBuilder::class);
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $consecutives = [];
