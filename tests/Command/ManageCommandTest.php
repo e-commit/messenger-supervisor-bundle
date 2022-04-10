@@ -62,7 +62,7 @@ class ManageCommandTest extends AbstractTest
             '[\-\s]+',
             '$/',
         ];
-        $this->assertRegExp(implode('', $expected), $commandTester->getDisplay(true));
+        $this->assertMatchesRegularExpression(implode('', $expected), $commandTester->getDisplay(true));
     }
 
     public function testStatusAllNagios(): void
@@ -105,7 +105,7 @@ class ManageCommandTest extends AbstractTest
             '[\-\s]+',
             '$/',
         ];
-        $this->assertRegExp(implode('', $expected), $commandTester->getDisplay(true));
+        $this->assertMatchesRegularExpression(implode('', $expected), $commandTester->getDisplay(true));
     }
 
     public function testStatusNagios(): void
@@ -150,7 +150,7 @@ class ManageCommandTest extends AbstractTest
             '[\-\s]+',
             '$/',
         ];
-        $this->assertRegExp(implode('', $expected), $commandTester->getDisplay(true));
+        $this->assertMatchesRegularExpression(implode('', $expected), $commandTester->getDisplay(true));
     }
 
     public function testStatusSuccessNagios(): void

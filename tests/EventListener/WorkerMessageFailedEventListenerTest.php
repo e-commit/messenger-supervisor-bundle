@@ -102,7 +102,7 @@ class WorkerMessageFailedEventListenerTest extends AbstractTest
                         $this->assertStringContainsString('<li><b>Stop program: </b>No</li>', $body);
                     }
                     $this->assertStringContainsString(json_encode($message), html_entity_decode($body));
-                    $this->assertRegExp('/Exception: My error at .+WorkerMessageFailedEventListenerTest\.php line \d+/', html_entity_decode($body));
+                    $this->assertMatchesRegularExpression('/Exception: My error at .+WorkerMessageFailedEventListenerTest\.php line \d+/', html_entity_decode($body));
 
                     return true;
                 }), $this->anything());
