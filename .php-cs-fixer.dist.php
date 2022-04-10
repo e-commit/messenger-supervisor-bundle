@@ -20,7 +20,7 @@ return $config->setRiskyAllowed(true)
         '@Symfony' => true,
         '@Symfony:risky' => true,
         '@DoctrineAnnotation' => true,
-        '@PHP71Migration' => true,
+        '@PHP73Migration' => true,
         '@PHP71Migration:risky' => true,
         '@PHPUnit84Migration:risky' => true,
         'array_syntax' => ['syntax' => 'short'],
