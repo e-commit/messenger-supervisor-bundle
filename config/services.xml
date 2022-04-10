@@ -9,19 +9,19 @@
     </parameters>
     
     <services>
-        <service id="ecommit_messenger_supervisor.supervisor_api" class="Supervisor\Supervisor" public="false">
+        <service id="ecommit_messenger_supervisor.supervisor_api" class="Supervisor\Supervisor">
             <factory class="Ecommit\MessengerSupervisorBundle\Supervisor\SupervisorApiFactory" method="createSupervisor" />
             <argument>%ecommit_messenger_supervisor.supervisor%</argument>
         </service>
-        <service id="Supervisor\Supervisor" alias="ecommit_messenger_supervisor.supervisor_api" public="false" />
+        <service id="Supervisor\Supervisor" alias="ecommit_messenger_supervisor.supervisor_api" />
 
-        <service id="ecommit_messenger_supervisor.supervisor" class="Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor" public="false">
+        <service id="ecommit_messenger_supervisor.supervisor" class="Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor">
             <argument type="service" id="ecommit_messenger_supervisor.supervisor_api" />
             <argument>%ecommit_messenger_supervisor.transports%</argument>
         </service>
-        <service id="Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor" alias="ecommit_messenger_supervisor.supervisor" public="false" />
+        <service id="Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor" alias="ecommit_messenger_supervisor.supervisor" />
 
-        <service id="ecommit_messenger_supervisor.event_listener.worker_message_failed" class="Ecommit\MessengerSupervisorBundle\EventListener\WorkerMessageFailedEventListener" public="false">
+        <service id="ecommit_messenger_supervisor.event_listener.worker_message_failed" class="Ecommit\MessengerSupervisorBundle\EventListener\WorkerMessageFailedEventListener">
             <argument type="service" id="ecommit_messenger_supervisor.supervisor" />
             <argument />
             <argument type="service" id="Psr\Log\LoggerInterface" on-invalid="null" />
@@ -34,7 +34,7 @@
             <argument type="service" id="twig" />
         </service>
 
-        <service id="Ecommit\MessengerSupervisorBundle\Command\ManageCommand" class="Ecommit\MessengerSupervisorBundle\Command\ManageCommand" public="false">
+        <service id="Ecommit\MessengerSupervisorBundle\Command\ManageCommand" class="Ecommit\MessengerSupervisorBundle\Command\ManageCommand">
             <argument type="service" id="ecommit_messenger_supervisor.supervisor" />
             <tag name="console.command" />
         </service>
