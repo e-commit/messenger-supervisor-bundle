@@ -25,4 +25,9 @@ class EcommitMessengerSupervisorBundle extends Bundle
 
         $container->addCompilerPass(new ErrorEmailBuilderPass());
     }
+
+    public function getPath(): string
+    {
+        return \dirname(__DIR__);
+    }
 }
