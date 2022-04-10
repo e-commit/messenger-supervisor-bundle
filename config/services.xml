@@ -5,7 +5,7 @@
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
     <parameters>
-        <parameter key="ecommit_messenger_supervisor.error_email_builder_service">Ecommit\MessengerSupervisorBundle\Mailer\ErrorEmailBuilder</parameter>
+        <parameter key="ecommit_messenger_supervisor.error_email_builder_service">ecommit_messenger_supervisor.error_email_builder</parameter>
     </parameters>
     
     <services>
@@ -21,7 +21,7 @@
         </service>
         <service id="Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor" alias="ecommit_messenger_supervisor.supervisor" public="false" />
 
-        <service id="Ecommit\MessengerSupervisorBundle\EventListener\WorkerMessageFailedEventListener" class="Ecommit\MessengerSupervisorBundle\EventListener\WorkerMessageFailedEventListener" public="false">
+        <service id="ecommit_messenger_supervisor.event_listener.worker_message_failed" class="Ecommit\MessengerSupervisorBundle\EventListener\WorkerMessageFailedEventListener" public="false">
             <argument type="service" id="ecommit_messenger_supervisor.supervisor" />
             <argument />
             <argument type="service" id="Psr\Log\LoggerInterface" on-invalid="null" />
@@ -30,7 +30,7 @@
             <tag name="kernel.event_listener" event="Symfony\Component\Messenger\Event\WorkerMessageFailedEvent" method="onFailure" priority="%ecommit_messenger_supervisor.failure_event_priority%" />
         </service>
 
-        <service id="Ecommit\MessengerSupervisorBundle\Mailer\ErrorEmailBuilder" class="Ecommit\MessengerSupervisorBundle\Mailer\ErrorEmailBuilder">
+        <service id="ecommit_messenger_supervisor.error_email_builder" class="Ecommit\MessengerSupervisorBundle\Mailer\ErrorEmailBuilder">
             <argument type="service" id="twig" />
         </service>
 

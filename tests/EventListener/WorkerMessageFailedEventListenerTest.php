@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Ecommit\MessengerSupervisorBundle\Tests\EventListener;
 
 use Ecommit\MessengerSupervisorBundle\EventListener\WorkerMessageFailedEventListener;
-use Ecommit\MessengerSupervisorBundle\Mailer\ErrorEmailBuilder;
 use Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor;
 use Ecommit\MessengerSupervisorBundle\Tests\AbstractTest;
 use Ecommit\MessengerSupervisorBundle\Tests\Functional\App\Messenger\Message\MessageSuccess;
@@ -65,7 +64,7 @@ class WorkerMessageFailedEventListenerTest extends AbstractTest
             ],
         ]);
 
-        $errorEmailBuilder = self::getContainer()->get(ErrorEmailBuilder::class);
+        $errorEmailBuilder = self::getContainer()->get('ecommit_messenger_supervisor.error_email_builder');
 
         $logger = $this->getMockBuilder(LoggerInterface::class)->getMock();
         $consecutives = [];

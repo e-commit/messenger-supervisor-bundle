@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ecommit\MessengerSupervisorBundle\DependencyInjection\Compiler;
 
-use Ecommit\MessengerSupervisorBundle\EventListener\WorkerMessageFailedEventListener;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -24,7 +23,7 @@ class ErrorEmailBuilderPass implements CompilerPassInterface
     {
         $errorEmailBuilderId = $container->getParameter('ecommit_messenger_supervisor.error_email_builder_service');
 
-        $container->getDefinition(WorkerMessageFailedEventListener::class)
+        $container->getDefinition('ecommit_messenger_supervisor.event_listener.worker_message_failed')
             ->replaceArgument(1, new Reference($errorEmailBuilderId));
     }
 }
