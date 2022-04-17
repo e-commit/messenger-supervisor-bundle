@@ -111,3 +111,7 @@ jobs:
             -   name: Run PHP CS Fixer
                 if: matrix.coding-standards
                 run: php vendor/friendsofphp/php-cs-fixer/php-cs-fixer fix --diff --dry-run -v
+
+            -   name: Check license year
+                if: matrix.coding-standards
+                run: cat LICENSE |grep -E "\(c\) ([0-9]+\-)*`date +%G`"
