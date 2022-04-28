@@ -92,10 +92,10 @@ ecommit_messenger_supervisor:
 
     #Mailer configuration
     mailer:
-        from: from@localhost #Sender - Required if a program is setting with send_mail=true option
-        to: to@localhost #Recipient - Required if a program is setting with send_mail=true option
+        from: from@domain.com #Sender - Required if a program is setting with send_mail=true option
+        to: to@domain.com #Recipient - Required if a program is setting with send_mail=true option
         #You can use multiple recipients:
-        #to: ['to1@localhost', 'to2@localhost']
+        #to: ['to1@domain.com', 'to2@domain.com']
         #subject: "[Supervisor][<server>][<program>] Error" #Suject - Not required - Default value : "[Supervisor][<program>] Error"
         #<program> is replaced by Supervisor program (group) name
         #<server> is replaced by server name

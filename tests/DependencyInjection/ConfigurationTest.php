@@ -54,8 +54,8 @@ class ConfigurationTest extends TestCase
                 ],
             ],
             'mailer' => [
-                'from' => 'from@localhost',
-                'to' => ['to@localhost'],
+                'from' => 'from@domain.com',
+                'to' => ['to@domain.com'],
             ],
         ]);
         $expected = [
@@ -76,8 +76,8 @@ class ConfigurationTest extends TestCase
                 ],
             ],
             'mailer' => [
-                'from' => 'from@localhost',
-                'to' => ['to@localhost'],
+                'from' => 'from@domain.com',
+                'to' => ['to@domain.com'],
                 'subject' => '[Supervisor][<server>][<program>] Error',
             ],
             'failure_event_priority' => 10,
@@ -96,8 +96,8 @@ class ConfigurationTest extends TestCase
                 'transport1' => 'program1',
             ],
             'mailer' => [
-                'from' => 'from@localhost',
-                'to' => ['to@localhost'],
+                'from' => 'from@domain.com',
+                'to' => ['to@domain.com'],
             ],
         ]);
         $expected = [
@@ -118,8 +118,8 @@ class ConfigurationTest extends TestCase
                 ],
             ],
             'mailer' => [
-                'from' => 'from@localhost',
-                'to' => ['to@localhost'],
+                'from' => 'from@domain.com',
+                'to' => ['to@domain.com'],
                 'subject' => '[Supervisor][<server>][<program>] Error',
             ],
             'failure_event_priority' => 10,
@@ -147,8 +147,8 @@ class ConfigurationTest extends TestCase
                 ],
             ],
             'mailer' => [
-                'from' => 'from@localhost',
-                'to' => ['to@localhost'],
+                'from' => 'from@domain.com',
+                'to' => ['to@domain.com'],
             ],
         ]);
     }
@@ -172,8 +172,8 @@ class ConfigurationTest extends TestCase
                 ],
             ],
             'mailer' => [
-                'from' => 'from@localhost',
-                'to' => ['to@localhost'],
+                'from' => 'from@domain.com',
+                'to' => ['to@domain.com'],
             ],
         ]);
     }
@@ -188,14 +188,14 @@ class ConfigurationTest extends TestCase
                 'transport1' => 'program1',
             ],
             'mailer' => [
-                'from' => 'from@localhost',
-                'to' => 'to@localhost',
+                'from' => 'from@domain.com',
+                'to' => 'to@domain.com',
             ],
         ]);
 
         $expected = [
-            'from' => 'from@localhost',
-            'to' => ['to@localhost'],
+            'from' => 'from@domain.com',
+            'to' => ['to@domain.com'],
             'subject' => '[Supervisor][<server>][<program>] Error',
         ];
         $this->assertSame($expected, $configuration['mailer']);
@@ -211,14 +211,14 @@ class ConfigurationTest extends TestCase
                 'transport1' => 'program1',
             ],
             'mailer' => [
-                'from' => 'from@localhost',
-                'to' => ['to1@localhost', 'to2@localhost'],
+                'from' => 'from@domain.com',
+                'to' => ['to1@domain.com', 'to2@domain.com'],
             ],
         ]);
 
         $expected = [
-            'from' => 'from@localhost',
-            'to' => ['to1@localhost', 'to2@localhost'],
+            'from' => 'from@domain.com',
+            'to' => ['to1@domain.com', 'to2@domain.com'],
             'subject' => '[Supervisor][<server>][<program>] Error',
         ];
         $this->assertSame($expected, $configuration['mailer']);
@@ -236,8 +236,8 @@ class ConfigurationTest extends TestCase
                 'transport1' => 'program1',
             ],
             'mailer' => [
-                'from' => 'from@localhost',
-                'to' => [['to1@localhost']],
+                'from' => 'from@domain.com',
+                'to' => [['to1@domain.com']],
             ],
         ]);
     }
@@ -255,7 +255,7 @@ class ConfigurationTest extends TestCase
             ],
             'mailer' => [
                 'from' => 'bad',
-                'to' => ['to1@localhost'],
+                'to' => ['to1@domain.com'],
             ],
         ]);
     }
@@ -272,7 +272,7 @@ class ConfigurationTest extends TestCase
                 'transport1' => 'program1',
             ],
             'mailer' => [
-                'from' => 'from@localhost',
+                'from' => 'from@domain.com',
                 'to' => ['bad'],
             ],
         ]);
@@ -290,7 +290,7 @@ class ConfigurationTest extends TestCase
                 'transport1' => 'program1',
             ],
             'mailer' => [
-                'to' => ['to1@localhost'],
+                'to' => ['to1@domain.com'],
             ],
         ]);
     }
@@ -307,7 +307,7 @@ class ConfigurationTest extends TestCase
                 'transport1' => 'program1',
             ],
             'mailer' => [
-                'from' => 'from@localhost',
+                'from' => 'from@domain.com',
             ],
         ]);
     }

@@ -84,10 +84,10 @@ class WorkerMessageFailedEventListenerTest extends AbstractTest
                 ->method('send')
                 ->with($this->callback(function (TemplatedEmail $email) use ($expectedStopProgram, $message) {
                     $this->assertCount(1, $email->getFrom());
-                    $this->assertSame('from@localhost', $email->getFrom()[0]->getAddress());
+                    $this->assertSame('from@domain.com', $email->getFrom()[0]->getAddress());
 
                     $this->assertCount(1, $email->getTo());
-                    $this->assertSame('to@localhost', $email->getTo()[0]->getAddress());
+                    $this->assertSame('to@domain.com', $email->getTo()[0]->getAddress());
 
                     $this->assertSame('[Supervisor][program1] Error', $email->getSubject());
 
@@ -111,8 +111,8 @@ class WorkerMessageFailedEventListenerTest extends AbstractTest
         }
 
         $listener = new WorkerMessageFailedEventListener($supervisor, $errorEmailBuilder, $logger, $mailer, [
-            'from' => 'from@localhost',
-            'to' => ['to@localhost'],
+            'from' => 'from@domain.com',
+            'to' => ['to@domain.com'],
             'subject' => '[Supervisor][<program>] Error',
         ]);
 
