@@ -21,6 +21,9 @@ class ErrorEmailBuilderPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
+        /**
+         * @var string
+         */
         $errorEmailBuilderId = $container->getParameter('ecommit_messenger_supervisor.error_email_builder_service');
 
         $container->getDefinition('ecommit_messenger_supervisor.event_listener.worker_message_failed')

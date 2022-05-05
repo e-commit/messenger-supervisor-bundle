@@ -29,8 +29,6 @@ final class ManageCommand extends Command
      */
     protected $supervisor;
 
-    protected $transports;
-
     public function __construct(Supervisor $supervisor)
     {
         $this->supervisor = $supervisor;
@@ -51,7 +49,7 @@ final class ManageCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $availableActions = ['start', 'stop', 'status'];
         $action = $input->getArgument('action');
@@ -89,6 +87,8 @@ final class ManageCommand extends Command
             case 'status':
                 return $this->statusAction($programs, $input, $output);
         }
+
+        return 1;
     }
 
     protected function startAction(array $programs, OutputInterface $output): int

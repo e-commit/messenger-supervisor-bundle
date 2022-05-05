@@ -41,7 +41,7 @@ class Supervisor
         return $this->transports;
     }
 
-    public function getTransport($name): array
+    public function getTransport(string $name): array
     {
         if (!\array_key_exists($name, $this->transports)) {
             throw new TransportNotFoundException('Transport not found: '.$name);
@@ -72,11 +72,23 @@ class Supervisor
         return $transportsNames;
     }
 
+    /**
+     * @psalm-suppress InvalidReturnStatement
+     * @psalm-suppress InvalidReturnType
+     *
+     * Fixed by Supervisor 5.
+     */
     public function startProgram(string $program, bool $wait = true): array
     {
         return $this->api->startProcessGroup($program, $wait);
     }
 
+    /**
+     * @psalm-suppress InvalidReturnStatement
+     * @psalm-suppress InvalidReturnType
+     *
+     * Fixed by Supervisor 5.
+     */
     public function stopProgram(string $program, bool $wait = true): array
     {
         return $this->api->stopProcessGroup($program, $wait);

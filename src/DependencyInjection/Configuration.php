@@ -19,6 +19,9 @@ use Egulias\EmailValidator\Validation\NoRFCWarningsValidation;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
+/**
+ * @psalm-suppress PossiblyUndefinedMethod
+ */
 class Configuration implements ConfigurationInterface
 {
     public function getConfigTreeBuilder()
@@ -34,7 +37,7 @@ class Configuration implements ConfigurationInterface
                     ->arrayPrototype()
                         ->beforeNormalization()
                             ->ifString()
-                            ->then(function ($v) { return ['program' => $v]; })
+                            ->then(function (string $v) { return ['program' => $v]; })
                         ->end()
                         ->children()
                             ->scalarNode('program')->isRequired()->end()
@@ -75,7 +78,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('from')
                             ->defaultNull()
                             ->validate()
-                                ->ifTrue(function ($v) {
+                                ->ifTrue(/** @param mixed $v */ function ($v) {
                                     return !$this->validateEmail($v);
                                 })
                                 ->thenInvalid('Invalid email %s')
@@ -85,7 +88,7 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue([])
                             ->scalarPrototype()
                                 ->validate()
-                                    ->ifTrue(function ($v) {
+                                    ->ifTrue(/** @param mixed $v */ function ($v) {
                                         return !$this->validateEmail($v);
                                     })
                                     ->thenInvalid('Invalid email %s')
@@ -93,7 +96,7 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->beforeNormalization()
                                 ->ifString()
-                                ->then(function ($v) { return [$v]; })
+                                ->then(function (string $v) { return [$v]; })
                             ->end()
                         ->end()
                         ->scalarNode('subject')->defaultValue('[Supervisor][<server>][<program>] Error')->end()
@@ -102,7 +105,7 @@ class Configuration implements ConfigurationInterface
                 ->integerNode('failure_event_priority')->defaultValue(10)->end()
             ->end()
             ->validate()
-                ->ifTrue(function ($v) {
+                ->ifTrue(/** @param mixed $v */ function ($v) {
                     if (0 === \count($v['transports']) || (!empty($v['mailer']['from']) && !empty($v['mailer']['to']))) {
                         return false;
                     }
@@ -116,10 +119,13 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
+    /**
+     * @param mixed $email
+     */
     protected function validateEmail($email): bool
     {
         $validator = new EmailValidator();
 
-        return $validator->isValid($email, new NoRFCWarningsValidation());
+        return \is_string($email) && $validator->isValid($email, new NoRFCWarningsValidation());
     }
 }

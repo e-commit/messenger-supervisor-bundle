@@ -38,7 +38,7 @@ class WorkerMessageFailedEventListener
     protected $errorEmailBuilder;
 
     /**
-     * @var LoggerInterface
+     * @var LoggerInterface|null
      */
     protected $logger;
 
