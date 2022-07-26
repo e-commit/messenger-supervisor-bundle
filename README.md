@@ -22,7 +22,7 @@ Available features :
 Install the bundle with Composer : In your project directory, execute the following command :
 
 ```bash
-$ composer require ecommit/messenger-supervisor-bundle:1.*@dev
+$ composer require ecommit/messenger-supervisor-bundle
 ```
 
 Enable the bundle in the `config/bundles.php` file for your project :
