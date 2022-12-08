@@ -32,16 +32,16 @@ jobs:
                         description: 'with SF 6.2.* lowest'
 
                     #Symfony versions
-                    -   php-version: '8.1'
+                    -   php-version: '8.2'
                         symfony-version: '5.4.*'
                         description: 'with SF 5.4.*'
-                    -   php-version: '8.1'
+                    -   php-version: '8.2'
                         symfony-version: '6.0.*'
                         description: 'with SF 6.0.*'
-                    -   php-version: '8.1'
+                    -   php-version: '8.2'
                         symfony-version: '6.1.*'
                         description: 'with SF 6.1.*'
-                    -   php-version: '8.1'
+                    -   php-version: '8.2'
                         symfony-version: '6.2.*'
                         description: 'with SF 6.2.*'
 
@@ -50,6 +50,7 @@ jobs:
                     -   php-version: '7.4'
                     -   php-version: '8.0'
                     -   php-version: '8.1'
+                    -   php-version: '8.2'
 
                     #CS
                     -   php-version: '8.1'
