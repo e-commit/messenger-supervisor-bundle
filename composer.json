@@ -23,7 +23,7 @@
     },
     "require": {
         "php": "^7.3|^8.0",
-        "egulias/email-validator": "^2.0|^3.0",
+        "egulias/email-validator": "^3.0|^4.0",
         "lstrojny/fxmlrpc": "^0.22",
         "nyholm/psr7": "^1.0",
         "psr/http-client": "^1.0",
