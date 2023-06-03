@@ -72,8 +72,8 @@ class WorkerMessageFailedEventListener
 
     protected function stopProcess(WorkerMessageFailedEvent $event, array $transportInfos): bool
     {
-        if (self::FAILURE_ACTION_NEVER === $transportInfos['failure']['stop_program'] ||
-            (self::FAILURE_ACTION_WILL_NOT_RETRY === $transportInfos['failure']['stop_program']) && $event->willRetry()) {
+        if (self::FAILURE_ACTION_NEVER === $transportInfos['failure']['stop_program']
+            || (self::FAILURE_ACTION_WILL_NOT_RETRY === $transportInfos['failure']['stop_program']) && $event->willRetry()) {
             return false;
         }
 
@@ -95,8 +95,8 @@ class WorkerMessageFailedEventListener
 
     protected function sendMail(WorkerMessageFailedEvent $event, array $transportInfos, bool $stop): bool
     {
-        if (self::FAILURE_ACTION_NEVER === $transportInfos['failure']['send_mail'] ||
-            (self::FAILURE_ACTION_WILL_NOT_RETRY === $transportInfos['failure']['send_mail']) && $event->willRetry()) {
+        if (self::FAILURE_ACTION_NEVER === $transportInfos['failure']['send_mail']
+            || (self::FAILURE_ACTION_WILL_NOT_RETRY === $transportInfos['failure']['send_mail']) && $event->willRetry()) {
             return false;
         }
 

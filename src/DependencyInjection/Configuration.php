@@ -37,7 +37,7 @@ class Configuration implements ConfigurationInterface
                     ->arrayPrototype()
                         ->beforeNormalization()
                             ->ifString()
-                            ->then(function (string $v) { return ['program' => $v]; })
+                            ->then(fn (string $v) => ['program' => $v])
                         ->end()
                         ->children()
                             ->scalarNode('program')->isRequired()->end()
@@ -78,9 +78,7 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('from')
                             ->defaultNull()
                             ->validate()
-                                ->ifTrue(/** @param mixed $v */ function ($v) {
-                                    return !$this->validateEmail($v);
-                                })
+                                ->ifTrue(fn (mixed $v) => !$this->validateEmail($v))
                                 ->thenInvalid('Invalid email %s')
                             ->end()
                         ->end()
@@ -88,15 +86,13 @@ class Configuration implements ConfigurationInterface
                             ->defaultValue([])
                             ->scalarPrototype()
                                 ->validate()
-                                    ->ifTrue(/** @param mixed $v */ function ($v) {
-                                        return !$this->validateEmail($v);
-                                    })
+                                    ->ifTrue(fn (mixed $v) => !$this->validateEmail($v))
                                     ->thenInvalid('Invalid email %s')
                                 ->end()
                             ->end()
                             ->beforeNormalization()
                                 ->ifString()
-                                ->then(function (string $v) { return [$v]; })
+                                ->then(fn (string $v) => [$v])
                             ->end()
                         ->end()
                         ->scalarNode('subject')->defaultValue('[Supervisor][<server>][<program>] Error')->end()
@@ -105,7 +101,7 @@ class Configuration implements ConfigurationInterface
                 ->integerNode('failure_event_priority')->defaultValue(10)->end()
             ->end()
             ->validate()
-                ->ifTrue(/** @param mixed $v */ function ($v) {
+                ->ifTrue(function (mixed $v) {
                     if (0 === \count($v['transports']) || (!empty($v['mailer']['from']) && !empty($v['mailer']['to']))) {
                         return false;
                     }
@@ -119,10 +115,7 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
-    /**
-     * @param mixed $email
-     */
-    protected function validateEmail($email): bool
+    protected function validateEmail(mixed $email): bool
     {
         $validator = new EmailValidator();
 

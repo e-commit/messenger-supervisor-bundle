@@ -331,7 +331,7 @@ class ManageCommandTest extends AbstractTest
         $this->assertSame('Nagios option can only be used with the "status" action'."\n", $commandTester->getDisplay(true));
     }
 
-    protected function createCommandTester(SupervisorApi $supervisorApi, ?array $transports = null): CommandTester
+    protected function createCommandTester(SupervisorApi $supervisorApi, array $transports = null): CommandTester
     {
         if (null === $transports) {
             $transports = $this->getTransports();

@@ -12,13 +12,4 @@
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
-
-    <issueHandlers>
-        <UndefinedDocblockClass>
-            <errorLevel type="suppress">
-                <!-- These classes have been added in PHP 8.1 and used by Symfony -->
-                <referencedClass name="UnitEnum"/>
-            </errorLevel>
-        </UndefinedDocblockClass>
-    </issueHandlers>
 </psalm>

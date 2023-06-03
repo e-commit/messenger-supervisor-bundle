@@ -14,11 +14,11 @@ jobs:
             matrix:
                 include:
                     #Mini (for each Symfony version)
-                    -   php-version: '7.3'
+                    -   php-version: '8.1'
                         symfony-version: '5.4.*'
                         composer-flags: '--prefer-stable --prefer-lowest'
                         description: 'with SF 5.4.* lowest'
-                    -   php-version: '8.0'
+                    -   php-version: '8.1'
                         symfony-version: '6.0.*'
                         composer-flags: '--prefer-stable --prefer-lowest'
                         description: 'with SF 6.0.* lowest'
@@ -30,6 +30,10 @@ jobs:
                         symfony-version: '6.2.*'
                         composer-flags: '--prefer-stable --prefer-lowest'
                         description: 'with SF 6.2.* lowest'
+                    -   php-version: '8.1'
+                        symfony-version: '6.3.*'
+                        composer-flags: '--prefer-stable --prefer-lowest'
+                        description: 'with SF 6.3.* lowest'
 
                     #Symfony versions
                     -   php-version: '8.2'
@@ -44,11 +48,11 @@ jobs:
                     -   php-version: '8.2'
                         symfony-version: '6.2.*'
                         description: 'with SF 6.2.*'
+                    -   php-version: '8.2'
+                        symfony-version: '6.3.*'
+                        description: 'with SF 6.3.*'
 
                     #PHP versions
-                    -   php-version: '7.3'
-                    -   php-version: '7.4'
-                    -   php-version: '8.0'
                     -   php-version: '8.1'
                     -   php-version: '8.2'
 
@@ -58,7 +62,7 @@ jobs:
                         coding-standards: true
 
                     #Static Analysis (min PHP version)
-                    -   php-version: '7.3'
+                    -   php-version: '8.1'
                         description: 'with Static Analysis'
                         static-analysis: true
 

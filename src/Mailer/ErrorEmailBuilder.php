@@ -65,7 +65,7 @@ class ErrorEmailBuilder implements ErrorEmailBuilderInterface
 
     protected function getThrowableMessage(\Throwable $throwable): string
     {
-        return sprintf('%s: %s at %s line %s', \get_class($throwable), $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
+        return sprintf('%s: %s at %s line %s', $throwable::class, $throwable->getMessage(), $throwable->getFile(), $throwable->getLine());
     }
 
     public function getSubject(WorkerMessageFailedEvent $event, array $transportInfos, array $mailerParameters, bool $stop): string
