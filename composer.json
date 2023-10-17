@@ -51,6 +51,10 @@
         "symfony/yaml": "^5.4|^6.0",
         "vimeo/psalm": "^4.22"
     },
+    "conflict": {
+        "symfony/messenger": "6.3.5",
+        "symfony/framework-bundle": "6.3.5"
+    },
     "config": {
         "sort-packages": true,
         "allow-plugins": {
