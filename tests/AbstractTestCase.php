@@ -13,7 +13,6 @@ declare(strict_types=1);
 
 namespace Ecommit\MessengerSupervisorBundle\Tests;
 
-use Supervisor\Process;
 use Supervisor\Supervisor as SupervisorApi;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
@@ -65,21 +64,21 @@ abstract class AbstractTestCase extends KernelTestCase
                 'program1_1' => [
                     'group' => 'program1',
                     'name' => 'program1_1',
-                    'state' => Process::RUNNING,
+                    'state' => $this->getProcessRunningState(),
                     'statename' => 'Running',
                     'pid' => '0011',
                 ],
                 'program1_2' => [
                     'group' => 'program1',
                     'name' => 'program1_2',
-                    'state' => Process::RUNNING,
+                    'state' => $this->getProcessRunningState(),
                     'statename' => 'Running',
                     'pid' => '0012',
                 ],
                 'program2_1' => [
                     'group' => 'program2',
                     'name' => 'program2_1',
-                    'state' => Process::STOPPED,
+                    'state' => $this->getProcessStoppedState(),
                     'statename' => 'Stopped',
                     'pid' => '0',
                 ],
@@ -132,5 +131,15 @@ abstract class AbstractTestCase extends KernelTestCase
             });
 
         return $supervisorApi;
+    }
+
+    protected function getProcessRunningState(): int
+    {
+        return 20;
+    }
+
+    protected function getProcessStoppedState(): int
+    {
+        return 0;
     }
 }

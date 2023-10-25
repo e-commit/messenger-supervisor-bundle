@@ -155,14 +155,14 @@ class SupervisorTest extends AbstractTestCase
                 new Process([
                     'group' => 'program1',
                     'name' => 'program1_1',
-                    'state' => Process::RUNNING,
+                    'state' => $this->getProcessRunningState(),
                     'statename' => 'Running',
                     'pid' => '0011',
                 ]),
                 new Process([
                     'group' => 'program1',
                     'name' => 'program1_2',
-                    'state' => Process::RUNNING,
+                    'state' => $this->getProcessRunningState(),
                     'statename' => 'Running',
                     'pid' => '0012',
                 ]),
