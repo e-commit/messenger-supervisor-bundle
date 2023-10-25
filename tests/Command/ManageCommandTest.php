@@ -15,12 +15,12 @@ namespace Ecommit\MessengerSupervisorBundle\Tests\Command;
 
 use Ecommit\MessengerSupervisorBundle\Command\ManageCommand;
 use Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor;
-use Ecommit\MessengerSupervisorBundle\Tests\AbstractTest;
+use Ecommit\MessengerSupervisorBundle\Tests\AbstractTestCase;
 use Supervisor\Supervisor as SupervisorApi;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
-class ManageCommandTest extends AbstractTest
+class ManageCommandTest extends AbstractTestCase
 {
     public function testStatusAll(): void
     {

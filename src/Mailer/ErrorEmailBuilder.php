@@ -70,6 +70,7 @@ class ErrorEmailBuilder implements ErrorEmailBuilderInterface
 
     public function getSubject(WorkerMessageFailedEvent $event, array $transportInfos, array $mailerParameters, bool $stop): string
     {
+        /** @var string $subject */
         $subject = $mailerParameters['subject'];
         $subject = str_replace('<program>', $transportInfos['program'], $subject);
         $subject = str_replace('<server>', php_uname('n'), $subject);

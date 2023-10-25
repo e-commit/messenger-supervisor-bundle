@@ -36,7 +36,7 @@ jobs:
                     -   php-version: '8.2'
 
                     #CS
-                    -   php-version: '8.1'
+                    -   php-version: '8.2'
                         description: 'with Coding Standards'
                         coding-standards: true
 

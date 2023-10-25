@@ -20,7 +20,7 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * @psalm-suppress PossiblyUndefinedMethod
+ * @psalm-suppress UndefinedMethod
  */
 class Configuration implements ConfigurationInterface
 {

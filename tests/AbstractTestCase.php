@@ -17,7 +17,7 @@ use Supervisor\Process;
 use Supervisor\Supervisor as SupervisorApi;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-abstract class AbstractTest extends KernelTestCase
+abstract class AbstractTestCase extends KernelTestCase
 {
     protected function getTransports(): array
     {
@@ -98,10 +98,15 @@ abstract class AbstractTest extends KernelTestCase
         foreach ($programs as $program) {
             $consecutives[] = [$program, $wait];
         }
-        $supervisorApi->expects($this->exactly(\count($programs)))
+        $matcher = $this->exactly(\count($consecutives));
+        $supervisorApi->expects($matcher)
             ->method('startProcessGroup')
-            ->withConsecutive(...$consecutives)
-            ->willReturn([]);
+            ->willReturnCallback(function (string $program, bool $wait) use ($matcher, $consecutives) {
+                $this->assertEquals($consecutives[$matcher->numberOfInvocations() - 1][0], $program);
+                $this->assertEquals($consecutives[$matcher->numberOfInvocations() - 1][1], $wait);
+
+                return [];
+            });
 
         return $supervisorApi;
     }
@@ -116,10 +121,15 @@ abstract class AbstractTest extends KernelTestCase
         foreach ($programs as $program) {
             $consecutives[] = [$program, $wait];
         }
-        $supervisorApi->expects($this->exactly(\count($programs)))
+        $matcher = $this->exactly(\count($consecutives));
+        $supervisorApi->expects($matcher)
             ->method('stopProcessGroup')
-            ->withConsecutive(...$consecutives)
-            ->willReturn([]);
+            ->willReturnCallback(function (string $program, bool $wait) use ($matcher, $consecutives) {
+                $this->assertEquals($consecutives[$matcher->numberOfInvocations() - 1][0], $program);
+                $this->assertEquals($consecutives[$matcher->numberOfInvocations() - 1][1], $wait);
+
+                return [];
+            });
 
         return $supervisorApi;
     }

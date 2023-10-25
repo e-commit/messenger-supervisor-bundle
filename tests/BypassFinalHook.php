@@ -14,11 +14,14 @@ declare(strict_types=1);
 namespace Ecommit\MessengerSupervisorBundle\Tests;
 
 use DG\BypassFinals;
-use PHPUnit\Runner\BeforeTestHook;
+use PHPUnit\Runner\Extension\Extension;
+use PHPUnit\Runner\Extension\Facade;
+use PHPUnit\Runner\Extension\ParameterCollection;
+use PHPUnit\TextUI\Configuration\Configuration;
 
-class BypassFinalHook implements BeforeTestHook
+class BypassFinalHook implements Extension
 {
-    public function executeBeforeTest(string $test): void
+    public function bootstrap(Configuration $configuration, Facade $facade, ParameterCollection $parameters): void
     {
         BypassFinals::enable();
     }

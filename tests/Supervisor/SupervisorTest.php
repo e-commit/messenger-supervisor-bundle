@@ -15,12 +15,12 @@ namespace Ecommit\MessengerSupervisorBundle\Tests\Supervisor;
 
 use Ecommit\MessengerSupervisorBundle\Exception\TransportNotFoundException;
 use Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor;
-use Ecommit\MessengerSupervisorBundle\Tests\AbstractTest;
+use Ecommit\MessengerSupervisorBundle\Tests\AbstractTestCase;
 use Supervisor\Process;
 use Supervisor\Supervisor as SupervisorApi;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
-class SupervisorTest extends AbstractTest
+class SupervisorTest extends AbstractTestCase
 {
     public function testServiceClass(): void
     {

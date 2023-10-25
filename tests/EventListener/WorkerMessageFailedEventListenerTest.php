@@ -15,8 +15,9 @@ namespace Ecommit\MessengerSupervisorBundle\Tests\EventListener;
 
 use Ecommit\MessengerSupervisorBundle\EventListener\WorkerMessageFailedEventListener;
 use Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor;
-use Ecommit\MessengerSupervisorBundle\Tests\AbstractTest;
+use Ecommit\MessengerSupervisorBundle\Tests\AbstractTestCase;
 use Ecommit\MessengerSupervisorBundle\Tests\Functional\App\Messenger\Message\MessageSuccess;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LoggerInterface;
 use Supervisor\Supervisor as SupervisorApi;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -24,11 +25,9 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 
-class WorkerMessageFailedEventListenerTest extends AbstractTest
+class WorkerMessageFailedEventListenerTest extends AbstractTestCase
 {
-    /**
-     * @dataProvider getTestOnFailureProvider
-     */
+    #[DataProvider('getTestOnFailureProvider')]
     public function testOnFailure(array $failure, bool $willRetry, bool $expectedStopProgram, bool $expectedMail): void
     {
         self::bootKernel();
@@ -74,9 +73,12 @@ class WorkerMessageFailedEventListenerTest extends AbstractTest
         if ($expectedMail) {
             $consecutives[] = ['Sending email'];
         }
-        $logger->expects($this->exactly(\count($consecutives)))
+        $matcher = $this->exactly(\count($consecutives));
+        $logger->expects($matcher)
             ->method('info')
-            ->withConsecutive(...$consecutives);
+            ->willReturnCallback(function (mixed $value) use ($matcher, $consecutives): void {
+                $this->assertEquals($consecutives[$matcher->numberOfInvocations() - 1][0], $value);
+            });
 
         $mailer = $this->getMockBuilder(MailerInterface::class)->getMock();
         if ($expectedMail) {
@@ -119,7 +121,7 @@ class WorkerMessageFailedEventListenerTest extends AbstractTest
         $listener->onFailure($event);
     }
 
-    public function getTestOnFailureProvider(): array
+    public static function getTestOnFailureProvider(): array
     {
         return [
             [['stop_program' => 'always', 'send_mail' => 'always'], true, true, true],
