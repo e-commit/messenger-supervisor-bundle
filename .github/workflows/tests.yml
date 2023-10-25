@@ -30,6 +30,12 @@ jobs:
                     -   php-version: '8.2'
                         symfony-version: '6.3.*'
                         description: 'with SF 6.3.*'
+                    -   php-version: '8.2'
+                        symfony-version: '6.4.*@dev'
+                        description: 'with SF 6.4.* dev'
+                    -   php-version: '8.2'
+                        symfony-version: '7.0.*@dev'
+                        description: 'with SF 7.0.* dev'
 
                     #PHP versions
                     -   php-version: '8.1'
@@ -89,6 +95,18 @@ jobs:
                     path: ${{ steps.composer-cache.outputs.dir }}
                     key: composer-${{ runner.os }}-${{ matrix.php-version }}-${{ hashFiles('**/composer.*') }}-${{ matrix.composer-flags }}
                     restore-keys: composer-${{ runner.os }}-${{ matrix.php-version }}-
+
+            -   name: Configure minimum stability
+                if: matrix.symfony-version && contains(matrix.symfony-version, '@dev')
+                run: composer config minimum-stability dev
+
+            -   name: Remove friendsofphp/php-cs-fixer
+                if: matrix.coding-standards != true
+                run: composer remove friendsofphp/php-cs-fixer --dev --no-update
+
+            -   name: Remove vimeo/psalm
+                if: matrix.static-analysis != true
+                run: composer remove vimeo/psalm --dev --no-update
 
             -   name: Configure Symfony Flex
                 if: matrix.symfony-version

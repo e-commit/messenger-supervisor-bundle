@@ -14,9 +14,10 @@ declare(strict_types=1);
 namespace Ecommit\MessengerSupervisorBundle\Tests\Functional\App\Messenger\MessageHandler;
 
 use Ecommit\MessengerSupervisorBundle\Tests\Functional\App\Messenger\Message\MessageError;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-class MessageErrorHandler implements MessageHandlerInterface
+#[AsMessageHandler]
+class MessageErrorHandler
 {
     public function __invoke(MessageError $message): void
     {

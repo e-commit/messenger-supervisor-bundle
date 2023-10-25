@@ -14,9 +14,10 @@ declare(strict_types=1);
 namespace Ecommit\MessengerSupervisorBundle\Tests\Functional\App\Messenger\MessageHandler;
 
 use Ecommit\MessengerSupervisorBundle\Tests\Functional\App\Messenger\Message\MessageSuccess;
-use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-class MessageSuccessHandler implements MessageHandlerInterface
+#[AsMessageHandler]
+class MessageSuccessHandler
 {
     public function __invoke(MessageSuccess $message): void
     {

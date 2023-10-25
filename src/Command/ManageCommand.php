@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ecommit\MessengerSupervisorBundle\Command;
 
 use Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Input\InputArgument;
@@ -22,6 +23,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(name: 'ecommit:supervisor', description: 'Manage Supervisor processes')]
 final class ManageCommand extends Command
 {
     /**
@@ -35,10 +37,6 @@ final class ManageCommand extends Command
 
         parent::__construct();
     }
-
-    protected static $defaultName = 'ecommit:supervisor';
-
-    protected static $defaultDescription = 'Manage Supervisor processes';
 
     protected function configure(): void
     {
