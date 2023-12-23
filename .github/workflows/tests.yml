@@ -24,22 +24,23 @@ jobs:
                         description: 'with SF 6.3.* lowest'
 
                     #Symfony versions
-                    -   php-version: '8.2'
+                    -   php-version: '8.3'
                         symfony-version: '5.4.*'
                         description: 'with SF 5.4.*'
-                    -   php-version: '8.2'
+                    -   php-version: '8.3'
                         symfony-version: '6.3.*'
                         description: 'with SF 6.3.*'
-                    -   php-version: '8.2'
+                    -   php-version: '8.3'
                         symfony-version: '6.4.*@dev'
                         description: 'with SF 6.4.* dev'
-                    -   php-version: '8.2'
+                    -   php-version: '8.3'
                         symfony-version: '7.0.*@dev'
                         description: 'with SF 7.0.* dev'
 
                     #PHP versions
                     -   php-version: '8.1'
                     -   php-version: '8.2'
+                    -   php-version: '8.3'
 
                     #CS
                     -   php-version: '8.2'
