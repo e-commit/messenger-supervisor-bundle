@@ -47,7 +47,7 @@ class ErrorEmailBuilder implements ErrorEmailBuilderInterface
         $throwable = $event->getThrowable();
         $throwableMessages = [$this->getThrowableMessage($throwable)];
         if ($throwable instanceof HandlerFailedException) {
-            /** @psalm-suppress UndefinedMethod */
+            /** @psalm-suppress UndefinedMethod, DeprecatedMethod */
             $exceptions = method_exists($throwable, 'getNestedExceptions') ? $throwable->getNestedExceptions() : $throwable->getWrappedExceptions(); // getNestedExceptions : SF < 3.4
             if (\count($exceptions) > 0) {
                 foreach ($exceptions as $exception) {
