@@ -35,7 +35,7 @@ class WorkflowTest extends KernelTestCase
 
     public function testStatusBeforeStart(): void
     {
-        self::getContainer()->get('doctrine')->getConnection()->query('DROP TABLE IF EXISTS messenger_messages');
+        self::getContainer()->get('doctrine')->getConnection()->executeQuery('DROP TABLE IF EXISTS messenger_messages');
 
         $command = $this->getCommandTester();
         $command->execute([
@@ -232,7 +232,7 @@ class WorkflowTest extends KernelTestCase
                 $queryBuilder->andWhere('messenger_messages.id = :id')
                     ->setParameter('id', $id);
             }
-            $stmnt = $queryBuilder->execute();
+            $stmnt = $queryBuilder->executeQuery();
             $count = (int) $stmnt->fetchOne();
 
             if ($count === $expected || null === $timeout || time() - $begin > $timeout) {
