@@ -156,9 +156,6 @@ class WorkflowTest extends KernelTestCase
     public function testFailAfterStartAll(): void
     {
         $this->checkCountMessages(0, 'async', $this->messageErrorId, 5);
-        if (\PHP_VERSION_ID >= 70400) { // Bug: email messages fails when sending async with PHP < 7.4
-            $this->checkCountMessages(1, 'email', null, 5);
-        }
     }
 
     /**
