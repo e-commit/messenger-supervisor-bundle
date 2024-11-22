@@ -52,7 +52,7 @@ final class ManageCommand extends Command
         $availableActions = ['start', 'stop', 'status'];
         $action = $input->getArgument('action');
         if (!\in_array($action, $availableActions)) {
-            $output->writeln(sprintf('<error>Bad action "%s" (Available: %s)</error>', $action, implode(', ', $availableActions)));
+            $output->writeln(\sprintf('<error>Bad action "%s" (Available: %s)</error>', $action, implode(', ', $availableActions)));
 
             return 1;
         }
@@ -68,7 +68,7 @@ final class ManageCommand extends Command
         sort($availablePrograms);
         foreach ($programs as $program) {
             if (!\in_array($program, $availablePrograms) && 'all' !== $program) {
-                $output->writeln(sprintf('<error>Bad program "%s" (Available: %s)</error>', $program, implode(', ', array_merge($availablePrograms, ['all']))));
+                $output->writeln(\sprintf('<error>Bad program "%s" (Available: %s)</error>', $program, implode(', ', array_merge($availablePrograms, ['all']))));
 
                 return 1;
             }
@@ -92,9 +92,9 @@ final class ManageCommand extends Command
     protected function startAction(array $programs, OutputInterface $output): int
     {
         foreach ($programs as $program) {
-            $output->writeln(sprintf('Starting %s program', $program));
+            $output->writeln(\sprintf('Starting %s program', $program));
             $this->supervisor->startProgram($program);
-            $output->writeln(sprintf('%s program is started', $program));
+            $output->writeln(\sprintf('%s program is started', $program));
         }
 
         return 0;
@@ -103,9 +103,9 @@ final class ManageCommand extends Command
     protected function stopAction(array $programs, OutputInterface $output): int
     {
         foreach ($programs as $program) {
-            $output->writeln(sprintf('Stopping %s program', $program));
+            $output->writeln(\sprintf('Stopping %s program', $program));
             $this->supervisor->stopProgram($program);
-            $output->writeln(sprintf('%s program is stopped', $program));
+            $output->writeln(\sprintf('%s program is stopped', $program));
         }
 
         return 0;
@@ -136,7 +136,7 @@ final class ManageCommand extends Command
                 $rows[] = ['Program', $programName];
                 $rows[] = ['Transport(s)', implode(', ', $transports)];
                 $rows[] = ['Process', $supervisorProcess['name']];
-                $rows[] = ['State', sprintf('<%s>%s</%s>', $color, $supervisorProcess['statename'], $color)];
+                $rows[] = ['State', \sprintf('<%s>%s</%s>', $color, $supervisorProcess['statename'], $color)];
                 $rows[] = ['PID', $supervisorProcess['pid']];
                 $rows[] = new TableSeparator();
                 if (!$supervisorProcess->isRunning()) {
@@ -171,12 +171,12 @@ final class ManageCommand extends Command
         }
 
         if ($stoppedProcesses > 0) {
-            $output->writeln(sprintf('CRITICAL - Running processes: %s Stopped processes: %s', $runningProcesses, $stoppedProcesses));
+            $output->writeln(\sprintf('CRITICAL - Running processes: %s Stopped processes: %s', $runningProcesses, $stoppedProcesses));
 
             return 2;
         }
 
-        $output->writeln(sprintf('OK - Running processes: %s Stopped processes: %s', $runningProcesses, $stoppedProcesses));
+        $output->writeln(\sprintf('OK - Running processes: %s Stopped processes: %s', $runningProcesses, $stoppedProcesses));
 
         return 0;
     }

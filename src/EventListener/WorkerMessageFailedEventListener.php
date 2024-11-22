@@ -79,7 +79,7 @@ class WorkerMessageFailedEventListener
 
         try {
             if ($this->logger) {
-                $this->logger->info(sprintf('Stopping %s program', $transportInfos['program']));
+                $this->logger->info(\sprintf('Stopping %s program', $transportInfos['program']));
             }
             $this->supervisor->stopProgram($transportInfos['program'], false);
         } catch (\Throwable $throwable) {

@@ -50,6 +50,6 @@ class SupervisorApiFactory
 
     protected static function getUrl(string $host, int $port): string
     {
-        return sprintf('http://%s:%s/RPC2', $host, $port);
+        return \sprintf('http://%s:%s/RPC2', $host, $port);
     }
 }
