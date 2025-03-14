@@ -20,6 +20,6 @@ Error during execution of "{{ program }}" Supervisor program.
 <h1>Error</h1>
 <ul>
     {% for throwable_message in throwable_messages %}
-        <li>{{ throwable_message }}</li>
+        <li>{{ throwable_message|nl2br }}</li>
     {% endfor %}
 </ul>

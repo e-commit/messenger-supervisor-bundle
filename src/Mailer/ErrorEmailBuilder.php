@@ -44,27 +44,29 @@ class ErrorEmailBuilder implements ErrorEmailBuilderInterface
 
     protected function getContext(WorkerMessageFailedEvent $event, array $transportInfos, array $mailerParameters, bool $stop): array
     {
-        $throwable = $event->getThrowable();
-        $throwableMessages = [$this->getThrowableMessage($throwable)];
-        if ($throwable instanceof HandlerFailedException) {
-            /** @psalm-suppress UndefinedMethod, DeprecatedMethod */
-            $exceptions = method_exists($throwable, 'getNestedExceptions') ? $throwable->getNestedExceptions() : $throwable->getWrappedExceptions(); // getNestedExceptions : SF < 3.4
-            if (\count($exceptions) > 0) {
-                foreach ($exceptions as $exception) {
-                    $throwableMessages[] = $this->getThrowableMessage($exception);
-                }
-            }
-        }
-
         return [
             'event' => $event,
             'program' => $transportInfos['program'],
             'transport_infos' => $transportInfos,
             'stop_program' => $stop,
-            'throwable_messages' => $throwableMessages,
+            'throwable_messages' => $this->createThrowableTrace($event->getThrowable()),
             'server' => php_uname('n'),
             'additional_data' => [],
         ];
+    }
+
+    protected function createThrowableTrace(\Throwable $throwable): array
+    {
+        $trace = [];
+        if ($throwable instanceof HandlerFailedException) {
+            foreach ($throwable->getWrappedExceptions() as $subThrowable) {
+                $trace = array_merge($trace, $this->createThrowableTrace($subThrowable));
+            }
+        } else {
+            $trace[] = \sprintf("%s\n%s", $this->getThrowableMessage($throwable), $throwable->getTraceAsString());
+        }
+
+        return $trace;
     }
 
     protected function getThrowableMessage(\Throwable $throwable): string
