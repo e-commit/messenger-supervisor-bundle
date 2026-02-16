@@ -6,10 +6,7 @@
     <env name="APP_ENV" value="test"/>
     <env name="SHELL_VERBOSITY" value="-1"/>
   </php>
-  <extensions>
-    <bootstrap class="Ecommit\MessengerSupervisorBundle\Tests\BypassFinalHook"/>
-  </extensions>
-  <testsuites>
+<testsuites>
     <testsuite name="Project Test Suite">
       <directory>tests</directory>
     </testsuite>

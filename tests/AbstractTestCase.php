@@ -14,7 +14,6 @@ declare(strict_types=1);
 namespace Ecommit\MessengerSupervisorBundle\Tests;
 
 use Ecommit\MessengerSupervisorBundle\DependencyInjection\Configuration;
-use Supervisor\Supervisor as SupervisorApi;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
@@ -24,6 +23,13 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
  */
 abstract class AbstractTestCase extends KernelTestCase
 {
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->restoreExceptionHandler();
+    }
+
     /**
      * @return Transports
      */
@@ -65,7 +71,7 @@ abstract class AbstractTestCase extends KernelTestCase
     {
         $supervisorApi = $this->getMockBuilder(SupervisorApi::class)
             ->disableOriginalConstructor()
-            ->addMethods(['getAllProcessInfo'])
+            ->onlyMethods(['getAllProcessInfo'])
             ->getMock();
         $supervisorApi->expects($this->once())
             ->method('getAllProcessInfo')
@@ -104,7 +110,7 @@ abstract class AbstractTestCase extends KernelTestCase
     {
         $supervisorApi = $this->getMockBuilder(SupervisorApi::class)
             ->disableOriginalConstructor()
-            ->addMethods(['startProcessGroup', 'getAllProcessInfo'])
+            ->onlyMethods(['startProcessGroup', 'getAllProcessInfo'])
             ->getMock();
 
         $startMatcher = $this->exactly(\count($programs));
@@ -133,7 +139,7 @@ abstract class AbstractTestCase extends KernelTestCase
     {
         $supervisorApi = $this->getMockBuilder(SupervisorApi::class)
             ->disableOriginalConstructor()
-            ->addMethods(['stopProcessGroup', 'getAllProcessInfo'])
+            ->onlyMethods(['stopProcessGroup', 'getAllProcessInfo'])
             ->getMock();
 
         $stopMatcher = $this->exactly(\count($programs));
@@ -176,5 +182,20 @@ abstract class AbstractTestCase extends KernelTestCase
     protected function getProcessStoppedState(): int
     {
         return 0;
+    }
+
+    protected function restoreExceptionHandler(): void
+    {
+        while (true) {
+            $previousHandler = set_exception_handler(static fn () => null);
+
+            restore_exception_handler();
+
+            if (null === $previousHandler) {
+                break;
+            }
+
+            restore_exception_handler();
+        }
     }
 }

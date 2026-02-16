@@ -16,8 +16,9 @@ namespace Ecommit\MessengerSupervisorBundle\Tests\Supervisor;
 use Ecommit\MessengerSupervisorBundle\Exception\TransportNotFoundException;
 use Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor;
 use Ecommit\MessengerSupervisorBundle\Tests\AbstractTestCase;
+use Ecommit\MessengerSupervisorBundle\Tests\SupervisorApi;
+use PHPUnit\Framework\Attributes\Depends;
 use Supervisor\Process;
-use Supervisor\Supervisor as SupervisorApi;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 class SupervisorTest extends AbstractTestCase
@@ -68,9 +69,7 @@ class SupervisorTest extends AbstractTestCase
         return $supervisor;
     }
 
-    /**
-     * @depends testGetTransports
-     */
+    #[Depends('testGetTransports')]
     public function testGetTransport(Supervisor $supervisor): Supervisor
     {
         $this->assertSame($this->getTransports()['transport1'], $supervisor->getTransport('transport1'));
@@ -78,9 +77,7 @@ class SupervisorTest extends AbstractTestCase
         return $supervisor;
     }
 
-    /**
-     * @depends testGetTransports
-     */
+    #[Depends('testGetTransports')]
     public function testGetTransportNotFound(Supervisor $supervisor): Supervisor
     {
         $this->expectException(TransportNotFoundException::class);
@@ -91,9 +88,7 @@ class SupervisorTest extends AbstractTestCase
         return $supervisor;
     }
 
-    /**
-     * @depends testGetTransports
-     */
+    #[Depends('testGetTransports')]
     public function testGetPrograms(Supervisor $supervisor): Supervisor
     {
         $expected = ['program1', 'program2', 'program4'];
@@ -102,9 +97,7 @@ class SupervisorTest extends AbstractTestCase
         return $supervisor;
     }
 
-    /**
-     * @depends testGetTransports
-     */
+    #[Depends('testGetTransports')]
     public function testGetProgramsWithDoublons(Supervisor $supervisor): Supervisor
     {
         $expected = ['program1', 'program2', 'program4'];
@@ -113,9 +106,7 @@ class SupervisorTest extends AbstractTestCase
         return $supervisor;
     }
 
-    /**
-     * @depends testGetTransports
-     */
+    #[Depends('testGetTransports')]
     public function testGetTransportsNamesByProgram(Supervisor $supervisor): Supervisor
     {
         $expected = ['transport1', 'transport3'];
@@ -124,9 +115,7 @@ class SupervisorTest extends AbstractTestCase
         return $supervisor;
     }
 
-    /**
-     * @depends testGetTransports
-     */
+    #[Depends('testGetTransports')]
     public function testGetTransportsNamesByProgramEmpty(Supervisor $supervisor): Supervisor
     {
         $this->assertSame([], $supervisor->getTransportsNamesByProgram('bad'));
@@ -138,7 +127,7 @@ class SupervisorTest extends AbstractTestCase
     {
         $supervisorApi = $this->getMockBuilder(SupervisorApi::class)
             ->disableOriginalConstructor()
-            ->addMethods(['startProcessGroup'])
+            ->onlyMethods(['startProcessGroup'])
             ->getMock();
         $supervisorApi->expects($this->once())
             ->method('startProcessGroup')
@@ -153,7 +142,7 @@ class SupervisorTest extends AbstractTestCase
     {
         $supervisorApi = $this->getMockBuilder(SupervisorApi::class)
             ->disableOriginalConstructor()
-            ->addMethods(['stopProcessGroup'])
+            ->onlyMethods(['stopProcessGroup'])
             ->getMock();
         $supervisorApi->expects($this->once())
             ->method('stopProcessGroup')

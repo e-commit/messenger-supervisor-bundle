@@ -22,7 +22,7 @@ return $config->setRiskyAllowed(true)
         '@DoctrineAnnotation' => true,
         '@PHP8x2Migration' => true,
         '@PHP8x0Migration:risky' => true,
-        '@PHPUnit10x0Migration:risky' => true,
+        '@PHPUnit11x0Migration:risky' => true,
         'array_syntax' => ['syntax' => 'short'],
         'fopen_flags' => true,
         'header_comment' => ['header' => $fileHeaderComment, 'separate' => 'both'],

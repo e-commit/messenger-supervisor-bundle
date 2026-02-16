@@ -1,6 +1,6 @@
 composer.lock
 /composer-require-checker.phar
 .php-cs-fixer.cache
-.phpunit.result.cache
+.phpunit.cache/
 tests/Functional/App/var/
 vendor/

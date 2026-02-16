@@ -17,8 +17,8 @@ use Ecommit\MessengerSupervisorBundle\Command\ManageCommand;
 use Ecommit\MessengerSupervisorBundle\DependencyInjection\Configuration;
 use Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor;
 use Ecommit\MessengerSupervisorBundle\Tests\AbstractTestCase;
+use Ecommit\MessengerSupervisorBundle\Tests\SupervisorApi;
 use Supervisor\ProcessStates;
-use Supervisor\Supervisor as SupervisorApi;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 

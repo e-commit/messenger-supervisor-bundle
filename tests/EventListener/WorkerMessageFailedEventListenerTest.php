@@ -17,9 +17,9 @@ use Ecommit\MessengerSupervisorBundle\EventListener\WorkerMessageFailedEventList
 use Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor;
 use Ecommit\MessengerSupervisorBundle\Tests\AbstractTestCase;
 use Ecommit\MessengerSupervisorBundle\Tests\Functional\App\Messenger\Message\MessageSuccess;
+use Ecommit\MessengerSupervisorBundle\Tests\SupervisorApi;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LoggerInterface;
-use Supervisor\Supervisor as SupervisorApi;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\Envelope;
@@ -53,7 +53,7 @@ class WorkerMessageFailedEventListenerTest extends AbstractTestCase
 
         $supervisorApi = $this->getMockBuilder(SupervisorApi::class)
             ->disableOriginalConstructor()
-            ->addMethods(['stopProcessGroup'])
+            ->onlyMethods(['stopProcessGroup'])
             ->getMock();
         if ($expectedStopProgram) {
             $supervisorApi->expects($this->once())

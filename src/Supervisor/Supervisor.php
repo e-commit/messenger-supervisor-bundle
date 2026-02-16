@@ -16,7 +16,7 @@ namespace Ecommit\MessengerSupervisorBundle\Supervisor;
 use Ecommit\MessengerSupervisorBundle\DependencyInjection\Configuration;
 use Ecommit\MessengerSupervisorBundle\Exception\TransportNotFoundException;
 use Supervisor\ProcessInterface;
-use Supervisor\Supervisor as SupervisorApi;
+use Supervisor\SupervisorInterface;
 
 /**
  * @phpstan-import-type Transports from Configuration
@@ -27,11 +27,11 @@ class Supervisor
     /**
      * @param Transports $transports
      */
-    public function __construct(protected SupervisorApi $api, protected array $transports)
+    public function __construct(protected SupervisorInterface $api, protected array $transports)
     {
     }
 
-    public function getApi(): SupervisorApi
+    public function getApi(): SupervisorInterface
     {
         return $this->api;
     }

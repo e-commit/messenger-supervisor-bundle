@@ -16,15 +16,16 @@ namespace Ecommit\MessengerSupervisorBundle\Tests\Functional;
 use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\DBAL\Connection;
 use Ecommit\MessengerSupervisorBundle\Command\ManageCommand;
+use Ecommit\MessengerSupervisorBundle\Tests\AbstractTestCase;
 use Ecommit\MessengerSupervisorBundle\Tests\Functional\App\Messenger\Message\MessageError;
 use Ecommit\MessengerSupervisorBundle\Tests\Functional\App\Messenger\Message\MessageSuccess;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use PHPUnit\Framework\Attributes\Depends;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\TransportMessageIdStamp;
 
-class WorkflowTest extends KernelTestCase
+class WorkflowTest extends AbstractTestCase
 {
     protected mixed $messageSuccessId = null;
     protected mixed $messageErrorId = null;
@@ -49,22 +50,20 @@ class WorkflowTest extends KernelTestCase
         $this->assertSame('CRITICAL - Running processes: 0 Stopped processes: 3'."\n", $command->getDisplay(true));
     }
 
-    /**
-     * @depends testStatusBeforeStart
-     */
+    #[Depends('testStatusBeforeStart')]
     public function testSendMessageSuccess(): void
     {
         $messageSuccess = new MessageSuccess();
         $bus = self::getContainer()->get(MessageBusInterface::class);
         $enveloppe = $bus->dispatch($messageSuccess);
-        $this->messageSuccessId = $enveloppe->last(TransportMessageIdStamp::class)->getId();
+        $stamp = $enveloppe->last(TransportMessageIdStamp::class);
+        $this->assertNotNull($stamp);
+        $this->messageSuccessId = $stamp->getId();
 
         $this->checkCountMessages(1, 'async', $this->messageSuccessId, null);
     }
 
-    /**
-     * @depends testSendMessageSuccess
-     */
+    #[Depends('testSendMessageSuccess')]
     public function testStartProgramAync(): void
     {
         $command = $this->getCommandTester();
@@ -76,9 +75,7 @@ class WorkflowTest extends KernelTestCase
         $this->assertSame(0, $command->getStatusCode());
     }
 
-    /**
-     * @depends testStartProgramAync
-     */
+    #[Depends('testStartProgramAync')]
     public function testStatusAfterStartProgramAync(): void
     {
         $command = $this->getCommandTester();
@@ -93,9 +90,7 @@ class WorkflowTest extends KernelTestCase
         $this->checkCountMessages(0, 'async', $this->messageSuccessId, 5);
     }
 
-    /**
-     * @depends testStatusAfterStartProgramAync
-     */
+    #[Depends('testStatusAfterStartProgramAync')]
     public function testStopProgramAync(): void
     {
         $command = $this->getCommandTester();
@@ -107,9 +102,7 @@ class WorkflowTest extends KernelTestCase
         $this->assertSame(0, $command->getStatusCode());
     }
 
-    /**
-     * @depends testStopProgramAync
-     */
+    #[Depends('testStopProgramAync')]
     public function testStatusAfterStopProgramAync(): void
     {
         $command = $this->getCommandTester();
@@ -123,23 +116,21 @@ class WorkflowTest extends KernelTestCase
         $this->assertSame('CRITICAL - Running processes: 0 Stopped processes: 1'."\n", $command->getDisplay(true));
     }
 
-    /**
-     * @depends testStatusAfterStopProgramAync
-     */
+    #[Depends('testStatusAfterStopProgramAync')]
     public function testSendMessageError(): void
     {
         $messageError = new MessageError();
         $bus = self::getContainer()->get(MessageBusInterface::class);
         $enveloppe = $bus->dispatch($messageError);
-        $this->messageErrorId = $enveloppe->last(TransportMessageIdStamp::class)->getId();
+        $stamp = $enveloppe->last(TransportMessageIdStamp::class);
+        $this->assertNotNull($stamp);
+        $this->messageErrorId = $stamp->getId();
 
         $this->checkCountMessages(1, 'async', $this->messageErrorId, null);
         $this->checkCountMessages(0, 'email', null, null);
     }
 
-    /**
-     * @depends testSendMessageError
-     */
+    #[Depends('testSendMessageError')]
     public function testStartAll(): void
     {
         $command = $this->getCommandTester();
@@ -151,17 +142,13 @@ class WorkflowTest extends KernelTestCase
         $this->assertSame(0, $command->getStatusCode());
     }
 
-    /**
-     * @depends testStartAll
-     */
+    #[Depends('testStartAll')]
     public function testFailAfterStartAll(): void
     {
         $this->checkCountMessages(0, 'async', $this->messageErrorId, 5);
     }
 
-    /**
-     * @depends testFailAfterStartAll
-     */
+    #[Depends('testFailAfterStartAll')]
     public function testStatusAfterFail(): void
     {
         $command = $this->getCommandTester();
@@ -175,9 +162,7 @@ class WorkflowTest extends KernelTestCase
         $this->assertSame('CRITICAL - Running processes: 2 Stopped processes: 1'."\n", $command->getDisplay(true));
     }
 
-    /**
-     * @depends testStatusAfterFail
-     */
+    #[Depends('testStatusAfterFail')]
     public function testStopAll(): void
     {
         $command = $this->getCommandTester();
@@ -189,9 +174,7 @@ class WorkflowTest extends KernelTestCase
         $this->assertSame(0, $command->getStatusCode());
     }
 
-    /**
-     * @depends testStopAll
-     */
+    #[Depends('testStopAll')]
     public function testStatusAfterStopAll(): void
     {
         $command = $this->getCommandTester();
