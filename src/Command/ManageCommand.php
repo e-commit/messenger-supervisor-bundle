@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ecommit\MessengerSupervisorBundle\Command;
 
 use Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor;
+use Supervisor\ProcessStates;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\TableSeparator;
@@ -92,23 +93,88 @@ final class ManageCommand extends Command
     protected function startAction(array $programs, OutputInterface $output): int
     {
         foreach ($programs as $program) {
-            $output->writeln(\sprintf('Starting %s program', $program));
-            $this->supervisor->startProgram($program);
-            $output->writeln(\sprintf('%s program is started', $program));
+            $output->writeln(\sprintf('Starting %s...', $program));
+            $this->supervisor->startProgram($program, false);
         }
 
-        return 0;
+        return $this->pollUntilDone($programs, 'start', $output);
     }
 
     protected function stopAction(array $programs, OutputInterface $output): int
     {
         foreach ($programs as $program) {
-            $output->writeln(\sprintf('Stopping %s program', $program));
-            $this->supervisor->stopProgram($program);
-            $output->writeln(\sprintf('%s program is stopped', $program));
+            $output->writeln(\sprintf('Stopping %s...', $program));
+            $this->supervisor->stopProgram($program, false);
         }
 
-        return 0;
+        return $this->pollUntilDone($programs, 'stop', $output);
+    }
+
+    private function pollUntilDone(array $programs, string $action, OutputInterface $output): int
+    {
+        $pending = $programs;
+        $result = 0;
+
+        while (!empty($pending)) {
+            usleep(200_000);
+            $statuses = $this->supervisor->getProgramsStatus($pending);
+
+            foreach ($statuses as $program => $processes) {
+                if ([] === $processes) {
+                    $output->writeln(\sprintf('<error>✗ %s not found in Supervisor</error>', $program));
+                    $pending = array_values(array_diff($pending, [$program]));
+                    $result = 1;
+
+                    continue;
+                }
+
+                $allTerminal = true;
+                $allSuccess = true;
+
+                foreach ($processes as $process) {
+                    $state = $process->getState();
+                    if ($this->isTerminalState($state, $action)) {
+                        if (!$this->isSuccessState($state, $action)) {
+                            $allSuccess = false;
+                        }
+                    } else {
+                        $allTerminal = false;
+                    }
+                }
+
+                if ($allTerminal) {
+                    if ($allSuccess) {
+                        $output->writeln(\sprintf('<info>✓ %s %s</info>', $program, 'start' === $action ? 'started' : 'stopped'));
+                    } else {
+                        $output->writeln(\sprintf('<error>✗ %s failed to %s</error>', $program, $action));
+                        $result = 1;
+                    }
+                    $pending = array_values(array_diff($pending, [$program]));
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    private function isTerminalState(ProcessStates $state, string $action): bool
+    {
+        return match ($action) {
+            'start' => \in_array($state, [ProcessStates::Running, ProcessStates::Stopped, ProcessStates::Fatal, ProcessStates::Unknown, ProcessStates::Exited], true),
+            'stop' => \in_array($state, [ProcessStates::Stopped, ProcessStates::Exited, ProcessStates::Fatal, ProcessStates::Unknown], true),
+        };
+    }
+
+    private function isSuccessState(ProcessStates $state, string $action): bool
+    {
+        return match ($action) {
+            // Stopped is intentionally included: the process may have been started and immediately stopped
+            // by the event listener (e.g. program_error) before the first poll — that is still a successful start.
+            // This relies on startProcessGroup(wait=false) transitioning the process out of Stopped synchronously
+            // before returning, so a Stopped state seen during polling means it ran and was stopped externally.
+            'start' => \in_array($state, [ProcessStates::Running, ProcessStates::Stopped], true),
+            'stop' => \in_array($state, [ProcessStates::Stopped, ProcessStates::Exited, ProcessStates::Fatal], true),
+        };
     }
 
     protected function statusAction(array $programs, InputInterface $input, OutputInterface $output): int

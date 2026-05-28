@@ -136,14 +136,30 @@ class SupervisorTest extends AbstractTestCase
 
     public function testStartProgram(): void
     {
-        $supervisorApi = $this->createSupervisorApiMockerStart(['program1'], true);
+        $supervisorApi = $this->getMockBuilder(SupervisorApi::class)
+            ->disableOriginalConstructor()
+            ->addMethods(['startProcessGroup'])
+            ->getMock();
+        $supervisorApi->expects($this->once())
+            ->method('startProcessGroup')
+            ->with('program1', true)
+            ->willReturn([]);
+
         $supervisor = new Supervisor($supervisorApi, $this->getTransports());
         $this->assertSame([], $supervisor->startProgram('program1'));
     }
 
     public function testStopProgram(): void
     {
-        $supervisorApi = $this->createSupervisorApiMockerStop(['program1'], true);
+        $supervisorApi = $this->getMockBuilder(SupervisorApi::class)
+            ->disableOriginalConstructor()
+            ->addMethods(['stopProcessGroup'])
+            ->getMock();
+        $supervisorApi->expects($this->once())
+            ->method('stopProcessGroup')
+            ->with('program1', true)
+            ->willReturn([]);
+
         $supervisor = new Supervisor($supervisorApi, $this->getTransports());
         $this->assertSame([], $supervisor->stopProgram('program1'));
     }

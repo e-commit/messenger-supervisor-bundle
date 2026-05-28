@@ -87,50 +87,73 @@ abstract class AbstractTestCase extends KernelTestCase
         return $supervisorApi;
     }
 
-    protected function createSupervisorApiMockerStart(array $programs, bool $wait): SupervisorApi
+    /**
+     * @param array<string> $programs    Programs to start, in call order
+     * @param array<array>  $pollResults getAllProcessInfo return value for each consecutive poll
+     */
+    protected function createSupervisorApiMockerStart(array $programs, array $pollResults): SupervisorApi
     {
         $supervisorApi = $this->getMockBuilder(SupervisorApi::class)
             ->disableOriginalConstructor()
-            ->addMethods(['startProcessGroup'])
+            ->addMethods(['startProcessGroup', 'getAllProcessInfo'])
             ->getMock();
-        $consecutives = [];
-        foreach ($programs as $program) {
-            $consecutives[] = [$program, $wait];
-        }
-        $matcher = $this->exactly(\count($consecutives));
-        $supervisorApi->expects($matcher)
+
+        $startMatcher = $this->exactly(\count($programs));
+        $supervisorApi->expects($startMatcher)
             ->method('startProcessGroup')
-            ->willReturnCallback(function (string $program, bool $wait) use ($matcher, $consecutives) {
-                $this->assertEquals($consecutives[$matcher->numberOfInvocations() - 1][0], $program);
-                $this->assertEquals($consecutives[$matcher->numberOfInvocations() - 1][1], $wait);
+            ->willReturnCallback(function (string $program, bool $wait) use ($startMatcher, $programs): array {
+                $this->assertSame($programs[$startMatcher->numberOfInvocations() - 1], $program);
+                $this->assertFalse($wait);
 
                 return [];
             });
+
+        $pollMatcher = $this->exactly(\count($pollResults));
+        $supervisorApi->expects($pollMatcher)
+            ->method('getAllProcessInfo')
+            ->willReturnCallback(static fn (): array => $pollResults[$pollMatcher->numberOfInvocations() - 1]);
 
         return $supervisorApi;
     }
 
-    protected function createSupervisorApiMockerStop(array $programs, bool $wait): SupervisorApi
+    /**
+     * @param array<string> $programs    Programs to stop, in call order
+     * @param array<array>  $pollResults getAllProcessInfo return value for each consecutive poll
+     */
+    protected function createSupervisorApiMockerStop(array $programs, array $pollResults): SupervisorApi
     {
         $supervisorApi = $this->getMockBuilder(SupervisorApi::class)
             ->disableOriginalConstructor()
-            ->addMethods(['stopProcessGroup'])
+            ->addMethods(['stopProcessGroup', 'getAllProcessInfo'])
             ->getMock();
-        $consecutives = [];
-        foreach ($programs as $program) {
-            $consecutives[] = [$program, $wait];
-        }
-        $matcher = $this->exactly(\count($consecutives));
-        $supervisorApi->expects($matcher)
+
+        $stopMatcher = $this->exactly(\count($programs));
+        $supervisorApi->expects($stopMatcher)
             ->method('stopProcessGroup')
-            ->willReturnCallback(function (string $program, bool $wait) use ($matcher, $consecutives) {
-                $this->assertEquals($consecutives[$matcher->numberOfInvocations() - 1][0], $program);
-                $this->assertEquals($consecutives[$matcher->numberOfInvocations() - 1][1], $wait);
+            ->willReturnCallback(function (string $program, bool $wait) use ($stopMatcher, $programs): array {
+                $this->assertSame($programs[$stopMatcher->numberOfInvocations() - 1], $program);
+                $this->assertFalse($wait);
 
                 return [];
             });
 
+        $pollMatcher = $this->exactly(\count($pollResults));
+        $supervisorApi->expects($pollMatcher)
+            ->method('getAllProcessInfo')
+            ->willReturnCallback(static fn (): array => $pollResults[$pollMatcher->numberOfInvocations() - 1]);
+
         return $supervisorApi;
+    }
+
+    protected function buildProcessInfo(string $group, string $name, int $state, string $stateName, string $pid = '0'): array
+    {
+        return [
+            'group' => $group,
+            'name' => $name,
+            'state' => $state,
+            'statename' => $stateName,
+            'pid' => $pid,
+        ];
     }
 
     protected function getProcessRunningState(): int
