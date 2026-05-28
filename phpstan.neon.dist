@@ -1,0 +1,15 @@
+includes:
+    - phpstan-baseline.neon
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon
+
+parameters:
+    level: max
+    paths:
+        - src
+        - tests
+    excludePaths:
+        - tests/Functional/App/var
+    treatPhpDocTypesAsCertain: false
+    symfony:
+        containerXmlPath: tests/Functional/App/var/cache/test/Ecommit_MessengerSupervisorBundle_Tests_Functional_App_KernelTestDebugContainer.xml
+        consoleApplicationLoader: tests/phpstan/console-application.php

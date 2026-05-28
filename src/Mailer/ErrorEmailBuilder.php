@@ -13,20 +13,19 @@ declare(strict_types=1);
 
 namespace Ecommit\MessengerSupervisorBundle\Mailer;
 
+use Ecommit\MessengerSupervisorBundle\DependencyInjection\Configuration;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Twig\Environment;
 
+/**
+ * @phpstan-import-type Transport from Configuration
+ * @phpstan-import-type MailerConfig from Configuration
+ */
 class ErrorEmailBuilder implements ErrorEmailBuilderInterface
 {
-    /**
-     * @var Environment
-     */
-    protected $twig;
-
-    public function __construct(Environment $twig)
+    public function __construct(protected Environment $twig)
     {
-        $this->twig = $twig;
     }
 
     public function getBody(WorkerMessageFailedEvent $event, array $transportInfos, array $mailerParameters, bool $stop): string
@@ -37,11 +36,21 @@ class ErrorEmailBuilder implements ErrorEmailBuilderInterface
         );
     }
 
+    /**
+     * @param Transport    $transportInfos
+     * @param MailerConfig $mailerParameters
+     */
     protected function getTemplate(WorkerMessageFailedEvent $event, array $transportInfos, array $mailerParameters, bool $stop): string
     {
         return '@EcommitMessengerSupervisor/Email/failure.html.twig';
     }
 
+    /**
+     * @param Transport    $transportInfos
+     * @param MailerConfig $mailerParameters
+     *
+     * @return array<string, mixed>
+     */
     protected function getContext(WorkerMessageFailedEvent $event, array $transportInfos, array $mailerParameters, bool $stop): array
     {
         return [
@@ -55,6 +64,9 @@ class ErrorEmailBuilder implements ErrorEmailBuilderInterface
         ];
     }
 
+    /**
+     * @return string[]
+     */
     protected function createThrowableTrace(\Throwable $throwable): array
     {
         $trace = [];

@@ -13,11 +13,20 @@ declare(strict_types=1);
 
 namespace Ecommit\MessengerSupervisorBundle\Tests;
 
+use Ecommit\MessengerSupervisorBundle\DependencyInjection\Configuration;
 use Supervisor\Supervisor as SupervisorApi;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
+/**
+ * @phpstan-import-type Transports from Configuration
+ *
+ * @phpstan-type ProcessInfo array{group: string, name: string, state: int, statename: string, pid: string}
+ */
 abstract class AbstractTestCase extends KernelTestCase
 {
+    /**
+     * @return Transports
+     */
     protected function getTransports(): array
     {
         return [
@@ -88,8 +97,8 @@ abstract class AbstractTestCase extends KernelTestCase
     }
 
     /**
-     * @param array<string> $programs    Programs to start, in call order
-     * @param array<array>  $pollResults getAllProcessInfo return value for each consecutive poll
+     * @param array<string>           $programs    Programs to start, in call order
+     * @param list<list<ProcessInfo>> $pollResults getAllProcessInfo return value for each consecutive poll
      */
     protected function createSupervisorApiMockerStart(array $programs, array $pollResults): SupervisorApi
     {
@@ -117,8 +126,8 @@ abstract class AbstractTestCase extends KernelTestCase
     }
 
     /**
-     * @param array<string> $programs    Programs to stop, in call order
-     * @param array<array>  $pollResults getAllProcessInfo return value for each consecutive poll
+     * @param array<string>           $programs    Programs to stop, in call order
+     * @param list<list<ProcessInfo>> $pollResults getAllProcessInfo return value for each consecutive poll
      */
     protected function createSupervisorApiMockerStop(array $programs, array $pollResults): SupervisorApi
     {
@@ -145,6 +154,9 @@ abstract class AbstractTestCase extends KernelTestCase
         return $supervisorApi;
     }
 
+    /**
+     * @return ProcessInfo
+     */
     protected function buildProcessInfo(string $group, string $name, int $state, string $stateName, string $pid = '0'): array
     {
         return [

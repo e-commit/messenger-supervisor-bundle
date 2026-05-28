@@ -13,11 +13,24 @@ declare(strict_types=1);
 
 namespace Ecommit\MessengerSupervisorBundle\Mailer;
 
+use Ecommit\MessengerSupervisorBundle\DependencyInjection\Configuration;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 
+/**
+ * @phpstan-import-type Transport from Configuration
+ * @phpstan-import-type MailerConfig from Configuration
+ */
 interface ErrorEmailBuilderInterface
 {
+    /**
+     * @param Transport    $transportInfos
+     * @param MailerConfig $mailerParameters
+     */
     public function getBody(WorkerMessageFailedEvent $event, array $transportInfos, array $mailerParameters, bool $stop): string;
 
+    /**
+     * @param Transport    $transportInfos
+     * @param MailerConfig $mailerParameters
+     */
     public function getSubject(WorkerMessageFailedEvent $event, array $transportInfos, array $mailerParameters, bool $stop): string;
 }

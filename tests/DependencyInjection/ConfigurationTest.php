@@ -18,6 +18,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\Definition\Processor;
 
+/**
+ * @phpstan-import-type ProcessedConfiguration from Configuration
+ */
 class ConfigurationTest extends TestCase
 {
     public function testMiniConfig(): void
@@ -326,10 +329,17 @@ class ConfigurationTest extends TestCase
         ]);
     }
 
+    /**
+     * @param array<mixed> $configs
+     *
+     * @return ProcessedConfiguration
+     */
     protected function processConfiguration(array $configs): array
     {
         $processor = new Processor();
+        /** @var ProcessedConfiguration $configuration */
+        $configuration = $processor->processConfiguration(new Configuration(), ['ecommit_messenger_supervisor' => $configs]);
 
-        return $processor->processConfiguration(new Configuration(), ['ecommit_messenger_supervisor' => $configs]);
+        return $configuration;
     }
 }

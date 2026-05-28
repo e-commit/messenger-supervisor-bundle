@@ -20,7 +20,32 @@ use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * @psalm-suppress UndefinedMethod
+ * @phpstan-type ProcessedConfiguration array{
+ *     transports: Transports,
+ *     supervisor: SupervisorConfig,
+ *     mailer: MailerConfig,
+ *     failure_event_priority: int
+ * }
+ * @phpstan-type Transports array<string, Transport>
+ * @phpstan-type Transport array{
+ *      program: string,
+ *      failure: array{
+ *          stop_program: WorkerMessageFailedEventListener::FAILURE_ACTION_*,
+ *          send_mail: WorkerMessageFailedEventListener::FAILURE_ACTION_*,
+ *      },
+ *  }
+ * @phpstan-type SupervisorConfig array{
+ *     host: string,
+ *     port: int,
+ *     username: ?string,
+ *     password: ?string,
+ *     timeout: int,
+ * }
+ * @phpstan-type MailerConfig array{
+ *     from: ?string,
+ *     to: string[],
+ *     subject: string,
+ * }
  */
 class Configuration implements ConfigurationInterface
 {
@@ -40,7 +65,7 @@ class Configuration implements ConfigurationInterface
                             ->then(static fn (string $v) => ['program' => $v])
                         ->end()
                         ->children()
-                            ->scalarNode('program')->isRequired()->end()
+                            ->scalarNode('program')->isRequired()->validate()->always(static fn (mixed $v): string => \is_scalar($v) ? (string) $v : '')->end()->end()
                             ->arrayNode('failure')
                                 ->addDefaultsIfNotSet()
                                 ->children()
@@ -66,10 +91,10 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('supervisor')
                     ->isRequired()
                     ->children()
-                        ->scalarNode('host')->isRequired()->end()
+                        ->scalarNode('host')->isRequired()->validate()->always(static fn (mixed $v): string => \is_scalar($v) ? (string) $v : '')->end()->end()
                         ->integerNode('port')->defaultValue(9001)->end()
-                        ->scalarNode('username')->defaultNull()->end()
-                        ->scalarNode('password')->defaultNull()->end()
+                        ->scalarNode('username')->defaultNull()->validate()->always(static fn (mixed $v): ?string => \is_scalar($v) ? (string) $v : null)->end()->end()
+                        ->scalarNode('password')->defaultNull()->validate()->always(static fn (mixed $v): ?string => \is_scalar($v) ? (string) $v : null)->end()->end()
                         ->integerNode('timeout')->defaultValue(3600)->end()
                     ->end()
                 ->end()
@@ -95,13 +120,14 @@ class Configuration implements ConfigurationInterface
                                 ->then(static fn (string $v) => [$v])
                             ->end()
                         ->end()
-                        ->scalarNode('subject')->defaultValue('[Supervisor][<server>][<program>] Error')->end()
+                        ->scalarNode('subject')->defaultValue('[Supervisor][<server>][<program>] Error')->validate()->always(static fn (mixed $v): string => \is_scalar($v) ? (string) $v : '')->end()->end()
                     ->end()
                 ->end()
                 ->integerNode('failure_event_priority')->defaultValue(10)->end()
             ->end()
             ->validate()
-                ->ifTrue(static function (mixed $v) {
+                ->ifTrue(static function (mixed $v): bool {
+                    /** @var ProcessedConfiguration $v */
                     if (0 === \count($v['transports']) || (!empty($v['mailer']['from']) && !empty($v['mailer']['to']))) {
                         return false;
                     }

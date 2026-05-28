@@ -1,0 +1,24 @@
+parameters:
+    ignoreErrors:
+        # False positive: BypassFinalHook allows mocking Supervisor\Supervisor (final class) at runtime.
+        # PHPStan cannot resolve mock types for final classes; the cascade "Cannot call method on mixed"
+        # errors all stem from this unresolvable intersection type.
+        -
+            identifier: method.unresolvableReturnType
+            paths:
+                - tests/
+        -
+            identifier: method.nonObject
+            paths:
+                - tests/
+
+        # PHPUnit\Framework\MockObject\Rule\InvocationOrder is @internal but numberOfInvocations()
+        # is the standard way to access the call count inside willReturnCallback.
+        -
+            identifier: method.internalClass
+            paths:
+                - tests/
+
+        # @legacy SF <= 7.4
+        -
+            message: '#Call to function method_exists\(\) with Symfony\\Component\\Console\\Application and .addCommand. will always evaluate to true#'

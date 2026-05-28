@@ -15,7 +15,7 @@ namespace Ecommit\MessengerSupervisorBundle\Tests\Functional\App\Messenger\Messa
 
 abstract class AbstractMessage
 {
-    public $name;
+    public string $name;
 
     public function __construct()
     {

@@ -124,9 +124,9 @@ jobs:
                 if: matrix.coding-standards != true
                 run: composer remove friendsofphp/php-cs-fixer --dev --no-update
 
-            -   name: Remove vimeo/psalm
+            -   name: Remove phpstan/phpstan
                 if: matrix.static-analysis != true
-                run: composer remove vimeo/psalm --dev --no-update
+                run: composer remove phpstan/phpstan --dev --no-update
 
             -   name: Configure Symfony Flex
                 if: matrix.symfony-version
@@ -159,6 +159,8 @@ jobs:
                     curl -LSs https://github.com/maglnet/ComposerRequireChecker/releases/latest/download/composer-require-checker.phar > composer-require-checker.phar
                     php composer-require-checker.phar check composer.json
 
-            -   name: Run Psalm
+            -   name: Run PHPStan
                 if: matrix.static-analysis
-                run: php vendor/bin/psalm --stats --output-format=github
+                run: |
+                    php tests/phpstan/console-application.php about > /dev/null
+                    php vendor/bin/phpstan --no-progress --error-format=github

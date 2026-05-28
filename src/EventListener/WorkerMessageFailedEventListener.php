@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ecommit\MessengerSupervisorBundle\EventListener;
 
+use Ecommit\MessengerSupervisorBundle\DependencyInjection\Configuration;
 use Ecommit\MessengerSupervisorBundle\Exception\TransportNotFoundException;
 use Ecommit\MessengerSupervisorBundle\Mailer\ErrorEmailBuilderInterface;
 use Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor;
@@ -21,6 +22,10 @@ use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 
+/**
+ * @phpstan-import-type Transport from Configuration
+ * @phpstan-import-type MailerConfig from Configuration
+ */
 class WorkerMessageFailedEventListener
 {
     public const FAILURE_ACTION_ALWAYS = 'always';
@@ -28,34 +33,10 @@ class WorkerMessageFailedEventListener
     public const FAILURE_ACTION_NEVER = 'never';
 
     /**
-     * @var Supervisor
+     * @param MailerConfig $mailerParameters
      */
-    protected $supervisor;
-
-    /**
-     * @var ErrorEmailBuilderInterface
-     */
-    protected $errorEmailBuilder;
-
-    /**
-     * @var LoggerInterface|null
-     */
-    protected $logger;
-
-    /**
-     * @var MailerInterface
-     */
-    protected $mailer;
-
-    protected $mailerParameters;
-
-    public function __construct(Supervisor $supervisor, ErrorEmailBuilderInterface $errorEmailBuilder, ?LoggerInterface $logger, MailerInterface $mailer, array $mailerParameters)
+    public function __construct(protected Supervisor $supervisor, protected ErrorEmailBuilderInterface $errorEmailBuilder, protected ?LoggerInterface $logger, protected MailerInterface $mailer, protected array $mailerParameters)
     {
-        $this->supervisor = $supervisor;
-        $this->errorEmailBuilder = $errorEmailBuilder;
-        $this->logger = $logger;
-        $this->mailer = $mailer;
-        $this->mailerParameters = $mailerParameters;
     }
 
     public function onFailure(WorkerMessageFailedEvent $event): void
@@ -70,6 +51,9 @@ class WorkerMessageFailedEventListener
         $this->sendMail($event, $transportInfos, $stop);
     }
 
+    /**
+     * @param Transport $transportInfos
+     */
     protected function stopProcess(WorkerMessageFailedEvent $event, array $transportInfos): bool
     {
         if (self::FAILURE_ACTION_NEVER === $transportInfos['failure']['stop_program']
@@ -93,8 +77,14 @@ class WorkerMessageFailedEventListener
         return true;
     }
 
+    /**
+     * @param Transport $transportInfos
+     */
     protected function sendMail(WorkerMessageFailedEvent $event, array $transportInfos, bool $stop): bool
     {
+        if (null === $this->mailerParameters['from']) {
+            return false;
+        }
         if (self::FAILURE_ACTION_NEVER === $transportInfos['failure']['send_mail']
             || (self::FAILURE_ACTION_WILL_NOT_RETRY === $transportInfos['failure']['send_mail']) && $event->willRetry()) {
             return false;

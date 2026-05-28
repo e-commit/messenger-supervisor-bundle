@@ -14,6 +14,7 @@ declare(strict_types=1);
 namespace Ecommit\MessengerSupervisorBundle\Tests\Command;
 
 use Ecommit\MessengerSupervisorBundle\Command\ManageCommand;
+use Ecommit\MessengerSupervisorBundle\DependencyInjection\Configuration;
 use Ecommit\MessengerSupervisorBundle\Supervisor\Supervisor;
 use Ecommit\MessengerSupervisorBundle\Tests\AbstractTestCase;
 use Supervisor\ProcessStates;
@@ -21,6 +22,9 @@ use Supervisor\Supervisor as SupervisorApi;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
+/**
+ * @phpstan-import-type Transports from Configuration
+ */
 class ManageCommandTest extends AbstractTestCase
 {
     public function testStatusAll(): void
@@ -514,6 +518,9 @@ class ManageCommandTest extends AbstractTestCase
         $this->assertSame('Nagios option can only be used with the "status" action'."\n", $commandTester->getDisplay(true));
     }
 
+    /**
+     * @param ?Transports $transports
+     */
     protected function createCommandTester(SupervisorApi $supervisorApi, ?array $transports = null): CommandTester
     {
         if (null === $transports) {

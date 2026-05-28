@@ -13,7 +13,8 @@ declare(strict_types=1);
 
 namespace Ecommit\MessengerSupervisorBundle\Tests\Functional;
 
-use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\DBAL\Connection;
 use Ecommit\MessengerSupervisorBundle\Command\ManageCommand;
 use Ecommit\MessengerSupervisorBundle\Tests\Functional\App\Messenger\Message\MessageError;
 use Ecommit\MessengerSupervisorBundle\Tests\Functional\App\Messenger\Message\MessageSuccess;
@@ -25,8 +26,8 @@ use Symfony\Component\Messenger\Stamp\TransportMessageIdStamp;
 
 class WorkflowTest extends KernelTestCase
 {
-    protected $messageSuccessId;
-    protected $messageErrorId;
+    protected mixed $messageSuccessId = null;
+    protected mixed $messageErrorId = null;
 
     protected function setUp(): void
     {
@@ -35,7 +36,7 @@ class WorkflowTest extends KernelTestCase
 
     public function testStatusBeforeStart(): void
     {
-        self::getContainer()->get('doctrine')->getConnection()->executeQuery('DROP TABLE IF EXISTS messenger_messages');
+        $this->getConnection()->executeQuery('DROP TABLE IF EXISTS messenger_messages');
 
         $command = $this->getCommandTester();
         $command->execute([
@@ -216,13 +217,12 @@ class WorkflowTest extends KernelTestCase
         return new CommandTester($application->find('ecommit:supervisor'));
     }
 
-    protected function checkCountMessages(int $expected, ?string $queue, ?string $id, ?int $timeout): void
+    protected function checkCountMessages(int $expected, ?string $queue, mixed $id, ?int $timeout): void
     {
         $begin = time();
 
         while (true) {
-            /** @var QueryBuilder $queryBuilder */
-            $queryBuilder = self::getContainer()->get('doctrine')->getConnection()->createQueryBuilder();
+            $queryBuilder = $this->getConnection()->createQueryBuilder();
             $queryBuilder->from('messenger_messages')
                 ->select('count(*)');
             if ($queue) {
@@ -234,7 +234,9 @@ class WorkflowTest extends KernelTestCase
                     ->setParameter('id', $id);
             }
             $stmnt = $queryBuilder->executeQuery();
-            $count = (int) $stmnt->fetchOne();
+            /** @var scalar $count */
+            $count = $stmnt->fetchOne();
+            $count = (int) $count;
 
             if ($count === $expected || null === $timeout || time() - $begin > $timeout) {
                 break;
@@ -244,5 +246,15 @@ class WorkflowTest extends KernelTestCase
         }
 
         $this->assertSame($expected, $count);
+    }
+
+    protected function getConnection(): Connection
+    {
+        /** @var Registry $doctrine */
+        $doctrine = self::getContainer()->get('doctrine');
+        /** @var Connection $connection */
+        $connection = $doctrine->getConnection();
+
+        return $connection;
     }
 }

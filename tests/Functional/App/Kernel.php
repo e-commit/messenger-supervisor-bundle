@@ -18,6 +18,7 @@ use Ecommit\MessengerSupervisorBundle\EcommitMessengerSupervisorBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 
 class Kernel extends BaseKernel
@@ -30,6 +31,9 @@ class Kernel extends BaseKernel
         $loader->load(__DIR__.'/config/services.yaml');
     }
 
+    /**
+     * @return BundleInterface[]
+     */
     public function registerBundles(): array
     {
         return [

@@ -25,8 +25,17 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 
+/**
+ * @phpstan-type Failure array{
+ *    stop_program: WorkerMessageFailedEventListener::FAILURE_ACTION_*,
+ *    send_mail: WorkerMessageFailedEventListener::FAILURE_ACTION_*
+ * }
+ */
 class WorkerMessageFailedEventListenerTest extends AbstractTestCase
 {
+    /**
+     * @param Failure $failure
+     */
     #[DataProvider('getTestOnFailureProvider')]
     public function testOnFailure(array $failure, bool $willRetry, bool $expectedStopProgram, bool $expectedMail): void
     {
@@ -77,7 +86,7 @@ class WorkerMessageFailedEventListenerTest extends AbstractTestCase
         $logger->expects($matcher)
             ->method('info')
             ->willReturnCallback(function (mixed $value) use ($matcher, $consecutives): void {
-                $this->assertEquals($consecutives[$matcher->numberOfInvocations() - 1][0], $value);
+                $this->assertEquals($consecutives[$matcher->numberOfInvocations() - 1][0], $value); // @phpstan-ignore offsetAccess.notFound
             });
 
         $mailer = $this->getMockBuilder(MailerInterface::class)->getMock();
@@ -93,7 +102,7 @@ class WorkerMessageFailedEventListenerTest extends AbstractTestCase
 
                     $this->assertSame('[Supervisor][program1] Error', $email->getSubject());
 
-                    $body = $email->getHtmlBody();
+                    $body = (string) $email->getHtmlBody();
 
                     $this->assertStringContainsString('Error during execution of "program1" Supervisor program.', $body);
                     $this->assertStringContainsString('<li><b>Transport: </b>transport1</li>', $body);
@@ -102,7 +111,7 @@ class WorkerMessageFailedEventListenerTest extends AbstractTestCase
                     } else {
                         $this->assertStringContainsString('<li><b>Stop program: </b>No</li>', $body);
                     }
-                    $this->assertStringContainsString(json_encode($message), html_entity_decode($body));
+                    $this->assertStringContainsString((string) json_encode($message), html_entity_decode($body));
                     $this->assertMatchesRegularExpression('/Exception: My error at .+WorkerMessageFailedEventListenerTest\.php line \d+/', html_entity_decode($body));
 
                     return true;
@@ -121,6 +130,14 @@ class WorkerMessageFailedEventListenerTest extends AbstractTestCase
         $listener->onFailure($event);
     }
 
+    /**
+     * @return array<array{
+     *     0: Failure,
+     *     1: bool,
+     *     2: bool,
+     *     3: bool,
+     * }>
+     */
     public static function getTestOnFailureProvider(): array
     {
         return [

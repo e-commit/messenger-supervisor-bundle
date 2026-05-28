@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Ecommit\MessengerSupervisorBundle\Supervisor;
 
+use Ecommit\MessengerSupervisorBundle\DependencyInjection\Configuration;
 use fXmlRpc\Client as fXmlRpcClient;
 use fXmlRpc\Transport\PsrTransport;
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -20,8 +21,14 @@ use Supervisor\Supervisor;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Psr18Client;
 
+/**
+ * @phpstan-import-type SupervisorConfig from Configuration
+ */
 class SupervisorApiFactory
 {
+    /**
+     * @param SupervisorConfig $supervisorParameters
+     */
     public static function createSupervisor(array $supervisorParameters): Supervisor
     {
         $auth = null;

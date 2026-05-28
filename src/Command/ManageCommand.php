@@ -86,10 +86,11 @@ final class ManageCommand extends Command
             case 'status':
                 return $this->statusAction($programs, $input, $output);
         }
-
-        return 1;
     }
 
+    /**
+     * @param string[] $programs
+     */
     protected function startAction(array $programs, OutputInterface $output): int
     {
         foreach ($programs as $program) {
@@ -100,6 +101,9 @@ final class ManageCommand extends Command
         return $this->pollUntilDone($programs, 'start', $output);
     }
 
+    /**
+     * @param string[] $programs
+     */
     protected function stopAction(array $programs, OutputInterface $output): int
     {
         foreach ($programs as $program) {
@@ -110,6 +114,10 @@ final class ManageCommand extends Command
         return $this->pollUntilDone($programs, 'stop', $output);
     }
 
+    /**
+     * @param string[]       $programs
+     * @param 'start'|'stop' $action
+     */
     private function pollUntilDone(array $programs, string $action, OutputInterface $output): int
     {
         $pending = $programs;
@@ -157,6 +165,9 @@ final class ManageCommand extends Command
         return $result;
     }
 
+    /**
+     * @param 'start'|'stop' $action
+     */
     private function isTerminalState(ProcessStates $state, string $action): bool
     {
         return match ($action) {
@@ -165,6 +176,9 @@ final class ManageCommand extends Command
         };
     }
 
+    /**
+     * @param 'start'|'stop' $action
+     */
     private function isSuccessState(ProcessStates $state, string $action): bool
     {
         return match ($action) {
@@ -177,6 +191,9 @@ final class ManageCommand extends Command
         };
     }
 
+    /**
+     * @param string[] $programs
+     */
     protected function statusAction(array $programs, InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption('nagios')) {
@@ -199,10 +216,12 @@ final class ManageCommand extends Command
             foreach ($supervisorProcesses as $supervisorProcess) {
                 $color = ($supervisorProcess->isRunning()) ? 'info' : 'error';
 
+                $statename = $supervisorProcess['statename'];
+                \assert(\is_string($statename));
                 $rows[] = ['Program', $programName];
                 $rows[] = ['Transport(s)', implode(', ', $transports)];
-                $rows[] = ['Process', $supervisorProcess['name']];
-                $rows[] = ['State', \sprintf('<%s>%s</%s>', $color, $supervisorProcess['statename'], $color)];
+                $rows[] = ['Process', $supervisorProcess->getName()];
+                $rows[] = ['State', \sprintf('<%s>%s</%s>', $color, $statename, $color)];
                 $rows[] = ['PID', $supervisorProcess['pid']];
                 $rows[] = new TableSeparator();
                 if (!$supervisorProcess->isRunning()) {
@@ -217,6 +236,9 @@ final class ManageCommand extends Command
         return $result;
     }
 
+    /**
+     * @param string[] $programs
+     */
     protected function nagiosStatusAction(array $programs, InputInterface $input, OutputInterface $output): int
     {
         $runningProcesses = 0;

@@ -43,7 +43,7 @@ class SupervisorTest extends AbstractTestCase
         self::bootKernel();
 
         $this->expectException(ServiceNotFoundException::class);
-        self::$kernel->getContainer()->get('ecommit_messenger_supervisor.supervisor');
+        self::$kernel?->getContainer()->get('ecommit_messenger_supervisor.supervisor');
     }
 
     public function testAliasServiceIsNotPublic(): void
@@ -51,7 +51,7 @@ class SupervisorTest extends AbstractTestCase
         self::bootKernel();
 
         $this->expectException(ServiceNotFoundException::class);
-        self::$kernel->getContainer()->get(Supervisor::class);
+        self::$kernel?->getContainer()->get(Supervisor::class);
     }
 
     public function testGetApi(): void
