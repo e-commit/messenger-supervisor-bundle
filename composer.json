@@ -47,6 +47,7 @@
         "friendsofphp/php-cs-fixer": "^3.88",
         "phpstan/extension-installer": "^1.2",
         "phpstan/phpstan": "^2.0",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^11",
         "symfony/doctrine-messenger": "^6.4|^7.4|^8.0",
