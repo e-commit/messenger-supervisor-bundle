@@ -134,9 +134,9 @@ jobs:
                 if: matrix.coding-standards != true
                 run: composer remove friendsofphp/php-cs-fixer --dev --no-update
 
-            -   name: Remove phpstan/phpstan
+            -   name: Remove phpstan/*
                 if: matrix.static-analysis != true
-                run: composer remove phpstan/phpstan --dev --no-update
+                run: composer remove phpstan/* --dev --no-update
 
             -   name: Configure Symfony Flex
                 if: matrix.symfony-version
